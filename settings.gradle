@@ -1,2 +1,0 @@
-rootProject.name = 'assignment-template'
-include 'client', 'server'
