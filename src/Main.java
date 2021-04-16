@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import objects.Settings;
 
-import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -22,17 +21,38 @@ public class Main extends Application {
         try {
             loadConfigFile(settings);
         } catch (FileNotFoundException e) {
-            System.out.println("Loading default settings");
-            settings.setUserName("athlete");
+            loadDefaultConfig(settings);
             createConfigFile(settings);
         }
+
         System.out.println("Welcome " + settings.getUserName());
 
-        Parent root = FXMLLoader.load(getClass().getResource("resources/fxml/sample.fxml"));
+
+        loadStartScreen(primaryStage, settings);
+    }
+
+    private void loadStartScreen(Stage primaryStage, Settings settings) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("resources/fxml/complex.fxml"));
         primaryStage.getIcons().add(new Image("resources/images/icon.png"));
-        primaryStage.setTitle("gym");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setTitle("Welcome - gym");
+        primaryStage.setScene(new Scene(root));
+
+        primaryStage.setWidth(settings.getWidth());
+        primaryStage.setHeight(settings.getHeight());
+        primaryStage.setMaximized(settings.isMaximized());
+        primaryStage.setFullScreen(settings.isFullScreen());
+
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(400);
+
         primaryStage.show();
+
+
+    }
+
+    private void loadDefaultConfig(Settings settings) {
+        System.out.println("Loading default settings");
+        settings.setUserName("athlete");
     }
 
     private void loadConfigFile(Settings settings) throws FileNotFoundException {
@@ -40,14 +60,13 @@ public class Main extends Application {
         System.out.println("Config file found at " + settings.getHome() + "config.txt");
 
         String userName = sc.next();
-
         settings.setUserName(userName);
     }
 
     private void createConfigFile(Settings settings) {
         try {
             PrintWriter writer = new PrintWriter(settings.getHome() + "config.txt");
-            StringBuilder file = new StringBuilder("Athlete\r\n");
+            StringBuilder file = new StringBuilder(settings.getUserName() + "\r\n");
             //athletes.stream().forEach(athlete -> file.append(athlete.toCsv()));
             writer.print(file);
             writer.close();

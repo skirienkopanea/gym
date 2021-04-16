@@ -1,0 +1,25 @@
+.root {
+    -fx-background-color: rgba(0,0,0,0.314);
+}
+
+.menu-bar {
+    -fx-border-color: rgba(0,0,0,0.314);
+}
+
+.tab-pane
+{
+    -fx-background-color: transparent;
+}
+
+.tab-pane>*.tab-header-area>*.tab-header-background
+{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.foot{
+    -fx-border-color: red;
+    -fx-background-color: red;
+}
+
+
