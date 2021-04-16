@@ -99,7 +99,6 @@ public class ComplexController {
 
         WorkoutFile file = new WorkoutFile(tab);
 
-
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
 
