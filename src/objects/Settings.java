@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Settings {
     private String home;
     private String userName;
+    private String title;
     private ArrayList<String> recentFiles;
     private boolean maximized;
     private boolean fullScreen;
@@ -18,10 +19,11 @@ public class Settings {
 
     public Settings() {
          this.home = new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\gym\\";
+         this.title = "Welcome";
          this.maximized = false;
          this.fullScreen = false;
-         this.width = 1280;
-         this.height = 720;
+         this.width = 600;
+         this.height = 400;
     }
 
     public String getHome() {

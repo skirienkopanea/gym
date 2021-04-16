@@ -1,25 +1,20 @@
 .root {
-    -fx-background-color: rgba(0,0,0,0.314);
+    /*-fx-background-color: rgb(221,221,221);*/
+    -fx-background-image: url('../images/background.PNG');
+    -fx-background-size: cover;
 }
 
-.menu-bar {
+.tab-pane {
+    -fx-background-color: transparent;
+}
+
+.menu-bar{
     -fx-border-color: rgba(0,0,0,0.314);
 }
 
-.tab-pane
-{
-    -fx-background-color: transparent;
-}
-
-.tab-pane>*.tab-header-area>*.tab-header-background
-{
+.tab-pane>*.tab-header-area>*.tab-header-background {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-}
-
-.foot{
-    -fx-border-color: red;
-    -fx-background-color: red;
 }
 
 
