@@ -8,12 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
-
-import javax.swing.*;
+import objects.Settings;
+import objects.WorkoutFile;
 
 public class ComplexController {
 
@@ -25,7 +24,6 @@ public class ComplexController {
 
     @FXML
     private Label welcomeMessageLabel;
-
 
     public void createTab(ActionEvent actionEvent) {
         Tab tab = new Tab();
@@ -41,9 +39,17 @@ public class ComplexController {
             }
         });
 
+        tab.setOnCloseRequest(new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                Settings.confirmClose(event);
+            }
+        });
+
         tab.setOnClosed(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
+                Settings.decreaseUnsavedFilesCount();
                 updateTitleTabClose();
             }
         });
@@ -90,26 +96,33 @@ public class ComplexController {
         slitPane.getItems().add(records);
 
         tab.setContent(slitPane);
+
+        WorkoutFile file = new WorkoutFile(tab);
+
+
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
+
+
     }
 
-
     public void closeTabFromMenu(ActionEvent actionEvent) {
-        System.out.println("close attempt");
-        if (tabPane.getTabs().size() > 0) {
+        if (Settings.confirmClose(actionEvent) && tabPane.getTabs().size() > 0) {
             int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
             tabPane.getTabs().remove(tabNumber);
+            Settings.decreaseUnsavedFilesCount();
             updateTitleTabClose();
         }
     }
 
-    public void updateTitleTabClose(){
-        if (tabPane.getTabs().size()==0) {
+    public void updateTitleTabClose() {
+        if (tabPane.getTabs().size() == 0) {
             welcomeMessageRow.setMaxHeight(welcomeMessageRow.getPrefHeight());
             welcomeMessageLabel.setVisible(true);
             Stage stage = (Stage) tabPane.getScene().getWindow();
-            stage.setTitle("Welcome - gym");
+            stage.setTitle("gym");
         }
     }
+
+
 }

@@ -1,12 +1,20 @@
 package objects;
 
+import javafx.event.Event;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+
 import javax.swing.JFileChooser;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Settings {
-    private String home;
+    private static String home;
     private String userName;
-    private String title;
+    private static int unsavedFilesCount;
     private ArrayList<String> recentFiles;
     private boolean maximized;
     private boolean fullScreen;
@@ -16,22 +24,36 @@ public class Settings {
     private int yCoordinate;
 
 
-
     public Settings() {
-         this.home = new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\gym\\";
-         this.title = "Welcome";
-         this.maximized = false;
-         this.fullScreen = false;
-         this.width = 600;
-         this.height = 400;
+        setHome(new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\gym\\");
+        this.maximized = false;
+        this.fullScreen = false;
+        this.width = 900;
+        this.height = 400;
     }
 
-    public String getHome() {
+    public static String getHome() {
         return home;
     }
 
-    public void setHome(String home) {
-        this.home = home;
+    public static void setHome(String home) {
+        Settings.home = home;
+    }
+
+    public static boolean confirmClose(Event event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("There are unsaved changes");
+        alert.setContentText("Are you sure you want to close?");
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("resources/images/icon.png"));
+
+        Optional<ButtonType> closeResponse = alert.showAndWait();
+        if (!ButtonType.OK.equals(closeResponse.get())) {
+            event.consume();
+            return false;
+        }
+        return true;
     }
 
     public String getUserName() {
@@ -40,6 +62,18 @@ public class Settings {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public static int getUnsavedFilesCount() {
+        return unsavedFilesCount;
+    }
+
+    public static void increaseUnsavedFilesCount() {
+        unsavedFilesCount++;
+    }
+
+    public static void decreaseUnsavedFilesCount() {
+        unsavedFilesCount--;
     }
 
     public ArrayList<String> getRecentFiles() {
@@ -96,5 +130,9 @@ public class Settings {
 
     public void setYCoordinate(int yCoordinate) {
         this.yCoordinate = yCoordinate;
+    }
+
+    public static ArrayList<Exercise> getDefaultExerciseList() {
+        return null;
     }
 }

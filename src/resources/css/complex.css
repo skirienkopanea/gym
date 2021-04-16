@@ -1,7 +1,13 @@
 .root {
-    /*-fx-background-color: rgb(221,221,221);*/
-    -fx-background-image: url('../images/background.PNG');
-    -fx-background-size: cover;
+    -fx-background-image: url('../images/background.jpg');
+    -fx-background-size: contain;
+    -fx-background-position: center;
+}
+
+#welcomeMessageLabel{
+ -fx-background-color: rgba(0,0,0,0.5);
+    -fx-background-radius: 10;
+    -fx-padding: 10;
 }
 
 .tab-pane {
@@ -14,7 +20,6 @@
 
 .tab-pane>*.tab-header-area>*.tab-header-background {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
 

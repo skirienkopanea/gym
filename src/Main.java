@@ -1,14 +1,24 @@
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import objects.Settings;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -27,14 +37,22 @@ public class Main extends Application {
 
         System.out.println("Welcome " + settings.getUserName());
 
-
         loadStartScreen(primaryStage, settings);
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                if (Settings.getUnsavedFilesCount() > 0) {
+                    Settings.confirmClose(event);
+                }
+            }
+        });
     }
 
     private void loadStartScreen(Stage primaryStage, Settings settings) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("resources/fxml/complex.fxml"));
         primaryStage.getIcons().add(new Image("resources/images/icon.png"));
-        primaryStage.setTitle("Welcome - gym");
+        primaryStage.setTitle("gym");
         primaryStage.setScene(new Scene(root));
 
         primaryStage.setWidth(settings.getWidth());
@@ -46,8 +64,6 @@ public class Main extends Application {
         primaryStage.setMinHeight(400);
 
         primaryStage.show();
-
-
     }
 
     private void loadDefaultConfig(Settings settings) {

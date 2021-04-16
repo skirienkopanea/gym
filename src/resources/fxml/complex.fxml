@@ -33,10 +33,10 @@
 -->
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import javafx.scene.input.KeyCodeCombination?>
 <GridPane minHeight="400.0" minWidth="600.0" stylesheets="/resources/css/complex.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ComplexController">
    <columnConstraints>
       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
@@ -95,7 +95,7 @@
       </menus>
     </MenuBar>
       <TabPane fx:id="tabPane" tabMaxHeight="20.0" tabMaxWidth="100.0" GridPane.rowIndex="2" />
-      <Label fx:id="welcomeMessageLabel" text="Start a new workout plan with: Ctrl + N" textFill="WHITE" GridPane.rowIndex="1">
+      <Label fx:id="welcomeMessageLabel" text="Start new workout plan: Ctrl + N" textFill="WHITE" GridPane.rowIndex="1">
          <font>
             <Font size="18.0" />
          </font></Label>
