@@ -1,3 +1,4 @@
+import controllers.ComplexController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -42,7 +43,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                if (Settings.getUnsavedFilesCount() > 0) {
+                if (ComplexController.unsavedTabs.size() > 0) {
                     Settings.confirmClose(event);
                 }
             }

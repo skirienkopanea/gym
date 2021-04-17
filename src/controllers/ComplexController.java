@@ -4,15 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import objects.Settings;
 import objects.WorkoutFile;
+
+import java.util.ArrayList;
 
 public class ComplexController {
 
@@ -25,10 +25,14 @@ public class ComplexController {
     @FXML
     private Label welcomeMessageLabel;
 
+    private int createdTabsSoFar = 0;
+
+    public static ArrayList<Tab> unsavedTabs = new ArrayList<>();
+
     public void createTab(ActionEvent actionEvent) {
         Tab tab = new Tab();
 
-        String title = "New " + (tabPane.getTabs().size() + 1);
+        String title = "New " + ++createdTabsSoFar;
         tab.setText(title);
 
         tab.setOnSelectionChanged(new EventHandler<Event>() {
@@ -42,14 +46,21 @@ public class ComplexController {
         tab.setOnCloseRequest(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
-                Settings.confirmClose(event);
+                int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
+                Tab tab = tabPane.getTabs().get(tabNumber);
+                if (unsavedTabs.contains(tab) && Settings.confirmClose(event)){
+                    unsavedTabs.remove(tab);
+                }
             }
         });
 
         tab.setOnClosed(new EventHandler<Event>() {
+            /**
+             * On close from tab x button
+             * @param event
+             */
             @Override
             public void handle(Event event) {
-                Settings.decreaseUnsavedFilesCount();
                 updateTitleTabClose();
             }
         });
@@ -99,18 +110,40 @@ public class ComplexController {
 
         WorkoutFile file = new WorkoutFile(tab);
 
+        //saveTab(tab);
+
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
 
 
     }
 
+    public static void saveTab(Tab tab) {
+        //Actually save the file, then...
+
+        unsavedTabs.remove(tab);
+
+    }
+
+    public static void setTabUnsaved(Tab tab){
+        unsavedTabs.add(tab);
+    }
+
+    /**
+     * On close from menu/shortcut
+     * @param actionEvent
+     */
     public void closeTabFromMenu(ActionEvent actionEvent) {
-        if (Settings.confirmClose(actionEvent) && tabPane.getTabs().size() > 0) {
-            int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
-            tabPane.getTabs().remove(tabNumber);
-            Settings.decreaseUnsavedFilesCount();
-            updateTitleTabClose();
+        int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
+        Tab tab = tabPane.getTabs().get(tabNumber);
+
+        if (tabPane.getTabs().size() > 0) {
+
+            if (unsavedTabs.contains(tab) && Settings.confirmClose(actionEvent)) {
+                unsavedTabs.remove(tab);
+                tabPane.getTabs().remove(tabNumber);
+                updateTitleTabClose();
+            }
         }
     }
 
@@ -121,6 +154,17 @@ public class ComplexController {
             Stage stage = (Stage) tabPane.getScene().getWindow();
             stage.setTitle("gym");
         }
+    }
+
+    public void helpPopUp(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText("Source code available at github.com/skirienkopanea/gym");
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("resources/images/icon.png"));
+
+        alert.showAndWait();
     }
 
 

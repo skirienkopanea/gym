@@ -4,17 +4,19 @@ import javafx.event.Event;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import javax.swing.JFileChooser;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class Settings {
     private static String home;
     private String userName;
-    private static int unsavedFilesCount;
     private ArrayList<String> recentFiles;
     private boolean maximized;
     private boolean fullScreen;
@@ -22,7 +24,6 @@ public class Settings {
     private int height;
     private int xCoordinate;
     private int yCoordinate;
-
 
     public Settings() {
         setHome(new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\gym\\");
@@ -62,18 +63,6 @@ public class Settings {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public static int getUnsavedFilesCount() {
-        return unsavedFilesCount;
-    }
-
-    public static void increaseUnsavedFilesCount() {
-        unsavedFilesCount++;
-    }
-
-    public static void decreaseUnsavedFilesCount() {
-        unsavedFilesCount--;
     }
 
     public ArrayList<String> getRecentFiles() {

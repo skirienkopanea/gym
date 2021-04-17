@@ -1,5 +1,6 @@
 package objects;
 
+import controllers.ComplexController;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ public class WorkoutFile {
     public WorkoutFile(Tab tab) {
         this.path = Settings.getHome();
         this.title = tab.getText();
-        tab.setText("*"+title);
+        tab.setText(path + title+"*");
         this.exerciseList = Settings.getDefaultExerciseList();
-        Settings.increaseUnsavedFilesCount();
+        ComplexController.setTabUnsaved(tab);
     }
 }
