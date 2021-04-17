@@ -70,11 +70,8 @@
                 </accelerator>
             </MenuItem>
             <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem mnemonicParsing="false" text="Export…" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">

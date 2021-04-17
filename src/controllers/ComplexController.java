@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -10,9 +11,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import objects.Settings;
+import objects.Workout;
 import objects.WorkoutFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ComplexController {
 
@@ -29,6 +33,8 @@ public class ComplexController {
 
     public static ArrayList<Tab> unsavedTabs = new ArrayList<>();
 
+    private Map<Tab,WorkoutFile> tabFiles = new HashMap<>();
+
     public void createTab(ActionEvent actionEvent) {
         Tab tab = new Tab();
 
@@ -39,7 +45,7 @@ public class ComplexController {
             @Override
             public void handle(Event event) {
                 Stage stage = (Stage) tabPane.getScene().getWindow();
-                stage.setTitle(tab.getText() + " - gym");
+                stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + " - gym");
             }
         });
 
@@ -106,10 +112,12 @@ public class ComplexController {
 
         slitPane.getItems().add(records);
 
-        tab.setContent(slitPane);
-
         WorkoutFile file = new WorkoutFile(tab);
+        tabFiles.put(tab,file);
+        //TODO: Remove this and only set TabUnsaved when there are actual changes.
+        setTabUnsaved(tab);
 
+        tab.setContent(slitPane);
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
 
@@ -124,17 +132,22 @@ public class ComplexController {
 
     public void saveTab(Tab tab) {
         //Actually save the file, then...
-        String substr = tab.getText().substring(0,tab.getText().length()-1);
+        String substr = tabFiles.get(tab).getTitle();
         tab.setText(substr);
 
         Stage stage = (Stage) tabPane.getScene().getWindow();
-        stage.setTitle(tab.getText() + " - gym");
+        stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + " - gym");
 
         unsavedTabs.remove(tab);
 
     }
 
-    public static void setTabUnsaved(Tab tab){
+    public void setTabUnsaved(Tab tab){
+        tab.setText(tab.getText()+"*");
+
+        Stage stage = (Stage) tabPane.getScene().getWindow();
+        stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + " - gym");
+
         unsavedTabs.add(tab);
     }
 
@@ -144,6 +157,12 @@ public class ComplexController {
      */
     public void closeTabFromMenu(ActionEvent actionEvent) {
         int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
+        if (tabNumber == -1){
+            Stage stage = (Stage) tabPane.getScene().getWindow();
+            stage.close();
+            return;
+        }
+
         Tab tab = tabPane.getTabs().get(tabNumber);
 
         if (tabPane.getTabs().size() > 0) {

@@ -22,4 +22,14 @@
     -fx-background-color: transparent;
 }
 
+.tab-pane .tab
+{
+    -fx-background-color: linear-gradient(to bottom, repeat, #CCCCCC , #808080 );
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+    -fx-alignment: CENTER-LEFT;
+    -fx-text-fill: black;
+}
+
 
