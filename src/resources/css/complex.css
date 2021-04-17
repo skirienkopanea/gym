@@ -5,13 +5,9 @@
 }
 
 #welcomeMessageLabel{
- -fx-background-color: rgba(0,0,0,0.5);
+ -fx-background-color: rgba(0,0,0,0.75);
     -fx-background-radius: 10;
     -fx-padding: 10;
-}
-
-.tab-pane {
-    -fx-background-color: transparent;
 }
 
 .menu-bar{
@@ -19,12 +15,7 @@
 }
 
 .tab-pane>*.tab-header-area>*.tab-header-background {
-    -fx-background-color: transparent;
-}
-
-.tab-pane .tab
-{
-    -fx-background-color: linear-gradient(to bottom, repeat, #CCCCCC , #808080 );
+    /*-fx-background-color: transparent;*/
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {

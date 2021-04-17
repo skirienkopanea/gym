@@ -10,10 +10,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import objects.Exercise;
 import objects.Settings;
-import objects.Workout;
 import objects.WorkoutFile;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class ComplexController {
 
         welcomeMessageRow.setMaxHeight(0);
         welcomeMessageLabel.setVisible(false);
+        tabPane.setVisible(true);
 
         SplitPane slitPane = new SplitPane();
         slitPane.setDisable(false);
@@ -126,12 +128,21 @@ public class ComplexController {
 
     public void saveTab(ActionEvent actionEvent) {
         int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
-        Tab tab = tabPane.getTabs().get(tabNumber);
-        saveTab(tab);
+        if (tabNumber != -1){
+            Tab tab = tabPane.getTabs().get(tabNumber);
+            saveTab(tab);
+        }
     }
 
     public void saveTab(Tab tab) {
         //Actually save the file, then...
+        try {
+            Exercise.writeExerciseCsv(tabFiles.get(tab));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
         String substr = tabFiles.get(tab).getTitle();
         tab.setText(substr);
 
@@ -182,6 +193,7 @@ public class ComplexController {
         if (tabPane.getTabs().size() == 0) {
             welcomeMessageRow.setMaxHeight(welcomeMessageRow.getPrefHeight());
             welcomeMessageLabel.setVisible(true);
+            tabPane.setVisible(false);
             Stage stage = (Stage) tabPane.getScene().getWindow();
             stage.setTitle("gym");
         }
