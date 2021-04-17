@@ -110,16 +110,25 @@ public class ComplexController {
 
         WorkoutFile file = new WorkoutFile(tab);
 
-        //saveTab(tab);
-
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
 
 
     }
 
-    public static void saveTab(Tab tab) {
+    public void saveTab(ActionEvent actionEvent) {
+        int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
+        Tab tab = tabPane.getTabs().get(tabNumber);
+        saveTab(tab);
+    }
+
+    public void saveTab(Tab tab) {
         //Actually save the file, then...
+        String substr = tab.getText().substring(0,tab.getText().length()-1);
+        tab.setText(substr);
+
+        Stage stage = (Stage) tabPane.getScene().getWindow();
+        stage.setTitle(tab.getText() + " - gym");
 
         unsavedTabs.remove(tab);
 
@@ -141,6 +150,9 @@ public class ComplexController {
 
             if (unsavedTabs.contains(tab) && Settings.confirmClose(actionEvent)) {
                 unsavedTabs.remove(tab);
+                tabPane.getTabs().remove(tabNumber);
+                updateTitleTabClose();
+            } else if (!unsavedTabs.contains(tab)){
                 tabPane.getTabs().remove(tabNumber);
                 updateTitleTabClose();
             }
@@ -166,6 +178,4 @@ public class ComplexController {
 
         alert.showAndWait();
     }
-
-
 }
