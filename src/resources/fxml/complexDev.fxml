@@ -35,7 +35,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <GridPane minHeight="400.0" minWidth="600.0" stylesheets="/resources/css/complex.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ComplexController">
    <columnConstraints>
@@ -43,7 +42,6 @@
    </columnConstraints>
    <rowConstraints>
       <RowConstraints vgrow="NEVER" />
-      <RowConstraints fx:id="welcomeMessageRow" vgrow="ALWAYS" />
       <RowConstraints vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
@@ -88,17 +86,6 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
-          <Menu mnemonicParsing="false" text="View">
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#helpPopUp" text="Exercises" />
-              </items>
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#helpPopUp" text="Workout" />
-              </items>
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#helpPopUp" text="Records" />
-              </items>
-          </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#helpPopUp" text="About gym" />
@@ -106,10 +93,10 @@
         </Menu>
       </menus>
     </MenuBar>
-      <TabPane fx:id="tabPane" tabMaxHeight="20.0" tabMaxWidth="100.0" GridPane.rowIndex="2" />
-      <Label fx:id="welcomeMessageLabel" text="Start a new workout plan: Ctrl + N" textFill="WHITE" GridPane.rowIndex="1">
-         <font>
-            <Font size="18.0" />
-         </font></Label>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+        <tabs>
+          <Tab text="Test" />
+        </tabs>
+      </TabPane>
    </children>
 </GridPane>

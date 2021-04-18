@@ -131,8 +131,6 @@ public class Settings {
                 "Powerlifting ratios regard the lowbar squat");
         squat.setHamstringEmphasis(.40);
         squat.setQuadricepsEmphasis(.60);
-        squat.setRatioReferenceExercise("squat");
-        squat.setRatioOverReference(1);
 
         ArrayList<String> squatSources = new ArrayList<>();
         squatSources.add("https://exrx.net/WeightExercises/Quadriceps/BBSquat");
@@ -244,7 +242,7 @@ public class Settings {
         row.setDescription("Bent-over Barbell Row orthogonal to the ground");
         row.setRetraction(1);
         row.setRatioReferenceExercise("powerClean");
-        row.setRatioOverReference(1.154);
+        row.setRatioOverReference(1.15);
 
         ArrayList<String> rowSources = new ArrayList<>();
         rowSources.add("https://exrx.net/WeightExercises/BackGeneral/BBBentOverRow");
@@ -360,7 +358,7 @@ public class Settings {
 
         ArrayList<String> sideRiseSources = new ArrayList<>();
         sideRiseSources.add("https://exrx.net/WeightExercises/DeltoidLateral/DBLateralRaise");
-        sideRise.setSources(facePullSources);
+        sideRise.setSources(sideRiseSources);
 
         result.add(sideRise);
 

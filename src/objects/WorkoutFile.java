@@ -12,12 +12,47 @@ public class WorkoutFile {
     private ArrayList<Exercise> exerciseList;
     private ArrayList<Workout> workoutList;
     private ArrayList<Record<Exercise,Integer,Integer,Integer,Date>> independentRecordsList;
+    private Exercise selectedExercise;
+    private Workout selectedWorkout;
+    private Record selectedRecord;
 
     public WorkoutFile(Tab tab) {
         this.tab = tab;
         this.path = Settings.getHome();
         this.title = tab.getText();
         this.exerciseList = Settings.getDefaultExerciseList();
+    }
+
+    public Tab getTab() {
+        return tab;
+    }
+
+    public void setTab(Tab tab) {
+        this.tab = tab;
+    }
+
+    public Exercise getSelectedExercise() {
+        return selectedExercise;
+    }
+
+    public void setSelectedExercise(Exercise selectedExercise) {
+        this.selectedExercise = selectedExercise;
+    }
+
+    public Workout getSelectedWorkout() {
+        return selectedWorkout;
+    }
+
+    public void setSelectedWorkout(Workout selectedWorkout) {
+        this.selectedWorkout = selectedWorkout;
+    }
+
+    public Record getSelectedRecord() {
+        return selectedRecord;
+    }
+
+    public void setSelectedRecord(Record selectedRecord) {
+        this.selectedRecord = selectedRecord;
     }
 
     public String getPath() {
