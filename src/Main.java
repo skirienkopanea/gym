@@ -61,8 +61,8 @@ public class Main extends Application {
         primaryStage.setMaximized(settings.isMaximized());
         primaryStage.setFullScreen(settings.isFullScreen());
 
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(400);
+        primaryStage.setMinWidth(1024);
+        primaryStage.setMinHeight(600);
 
         primaryStage.show();
     }

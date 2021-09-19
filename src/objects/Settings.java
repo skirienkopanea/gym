@@ -27,7 +27,7 @@ public class Settings {
 
     public Settings() {
         setHome(new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\gym\\");
-        this.maximized = false;
+        this.maximized = true;
         this.fullScreen = false;
         this.width = 800;
         this.height = 400;
