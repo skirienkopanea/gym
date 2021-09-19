@@ -193,7 +193,6 @@ public class ComplexController {
 
 
         tabFiles.put(tab,workoutFile);
-        //TODO: Remove this and only set TabUnsaved when there are actual changes.
         setTabUnsaved(tab);
 
         tab.setContent(splitPane);
@@ -353,22 +352,36 @@ public class ComplexController {
     }
 
     public void saveTab(Tab tab) {
-        //Actually save the file, then...
+
         try {
             Exercise.writeExerciseCsv(tabFiles.get(tab));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+            return;
         }
-
 
         String substr = tabFiles.get(tab).getTitle();
         tab.setText(substr);
 
         Stage stage = (Stage) tabPane.getScene().getWindow();
-        stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + " - gym");
+        stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + ".gym");
 
         unsavedTabs.remove(tab);
 
+    }
+
+    public void saveAs(ActionEvent actionEvent) {
+        int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
+        if (tabNumber != -1){
+            Tab tab = tabPane.getTabs().get(tabNumber);
+            saveAs(tab);
+        }
+    }
+
+    public void saveAs(Tab tab){
+        tabFiles.get(tab).setSaveAs(true);
+        saveTab(tab);
     }
 
     public void setTabUnsaved(Tab tab){

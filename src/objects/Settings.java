@@ -121,7 +121,7 @@ public class Settings {
         this.yCoordinate = yCoordinate;
     }
 
-    public static ArrayList<Exercise> getDefaultExerciseList() {
+    public static ArrayList<Exercise> getDefaultExerciseList() { //TO DO: replace with reading from a config file
 
         ArrayList<Exercise> result = new ArrayList<>();
 

@@ -15,12 +15,15 @@ public class WorkoutFile {
     private Exercise selectedExercise;
     private Workout selectedWorkout;
     private Record selectedRecord;
+    private boolean saveAs;
+    private boolean unSaved;
 
     public WorkoutFile(Tab tab) {
         this.tab = tab;
         this.path = Settings.getHome();
         this.title = tab.getText();
         this.exerciseList = Settings.getDefaultExerciseList();
+        this.saveAs = true;
     }
 
     public Tab getTab() {
@@ -93,5 +96,13 @@ public class WorkoutFile {
 
     public void setIndependentRecordsList(ArrayList<Record<Exercise, Integer, Integer, Integer, Date>> independentRecordsList) {
         this.independentRecordsList = independentRecordsList;
+    }
+
+    public boolean isSaveAs() {
+        return saveAs;
+    }
+
+    public void setSaveAs(boolean saveAs) {
+        this.saveAs = saveAs;
     }
 }

@@ -1,5 +1,9 @@
 package objects;
 
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -158,7 +162,22 @@ public class Exercise {
     }
 
     public static void writeExerciseCsv(WorkoutFile workoutFile) throws FileNotFoundException {
-        String path = Settings.getHome() + "test.csv";
+
+        String path = workoutFile.getPath() + workoutFile.getTitle() + ".gym";
+
+        if (workoutFile.isSaveAs()) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save workout");
+            fileChooser.setInitialDirectory(new File(workoutFile.getPath()));
+            fileChooser.setInitialFileName(workoutFile.getTitle());
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GYM", "*.gym"));
+
+            File file = fileChooser.showSaveDialog(new Stage());
+
+            path = file.getAbsolutePath();
+            workoutFile.setTitle(file.getName().substring(0,file.getName().length()-4));
+        }
+
         System.out.println(path);
         Field[] fields = Exercise.class.getDeclaredFields();
         StringBuilder file = new StringBuilder("Exercises\r\n");
@@ -187,6 +206,8 @@ public class Exercise {
         writer.print(file);
         writer.close();
 
-        System.out.println(file);
+        //System.out.println(file);
+        workoutFile.setSaveAs(false);
+
     }
 }
