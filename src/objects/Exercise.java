@@ -163,7 +163,7 @@ public class Exercise {
 
     public static void writeExerciseCsv(WorkoutFile workoutFile) throws FileNotFoundException {
 
-        String path = workoutFile.getPath() + workoutFile.getTitle() + ".gym";
+        String path = workoutFile.getPath();
 
         if (workoutFile.isSaveAs()) {
             FileChooser fileChooser = new FileChooser();
@@ -174,8 +174,9 @@ public class Exercise {
 
             File file = fileChooser.showSaveDialog(new Stage());
 
-            path = file.getAbsolutePath();
+            path = file.getParent() + "\\";
             workoutFile.setTitle(file.getName().substring(0,file.getName().length()-4));
+            workoutFile.setPath(path);
         }
 
         System.out.println(path);
@@ -202,7 +203,7 @@ public class Exercise {
             file.deleteCharAt(file.length() - 1);
             file.append("\r\n");
         }
-        PrintWriter writer = new PrintWriter(path);
+        PrintWriter writer = new PrintWriter(path + workoutFile.getTitle() + ".gym" );
         writer.print(file);
         writer.close();
 

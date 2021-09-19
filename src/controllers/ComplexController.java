@@ -67,7 +67,7 @@ public class ComplexController {
             @Override
             public void handle(Event event) {
                 Stage stage = (Stage) tabPane.getScene().getWindow();
-                stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + " - gym");
+                stage.setTitle((tabFiles.get(tab).isUnSaved() ? "* " : "")  + tabFiles.get(tab).getPath() + tabFiles.get(tab).getTitle() + ".gym");
             }
         });
 
@@ -365,7 +365,9 @@ public class ComplexController {
         tab.setText(substr);
 
         Stage stage = (Stage) tabPane.getScene().getWindow();
-        stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + ".gym");
+        stage.setTitle(tabFiles.get(tab).getPath() + tabFiles.get(tab).getTitle() + ".gym");
+
+        tabFiles.get(tab).setUnSaved(false);
 
         unsavedTabs.remove(tab);
 
@@ -385,10 +387,12 @@ public class ComplexController {
     }
 
     public void setTabUnsaved(Tab tab){
-        tab.setText(tab.getText()+"*");
+        tab.setText("* " + tab.getText());
 
         Stage stage = (Stage) tabPane.getScene().getWindow();
-        stage.setTitle(tabFiles.get(tab).getPath() + tab.getText() + " - gym");
+        stage.setTitle("* " + tabFiles.get(tab).getPath() + tabFiles.get(tab).getTitle() + ".gym");
+
+        tabFiles.get(tab).setUnSaved(true);
 
         unsavedTabs.add(tab);
     }
