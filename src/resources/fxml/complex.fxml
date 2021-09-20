@@ -57,7 +57,6 @@
                 </accelerator>
             </MenuItem>
             <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#closeTabFromMenu" text="Close">
                   <accelerator>
@@ -73,8 +72,6 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Export…" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
