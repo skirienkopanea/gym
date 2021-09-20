@@ -11,12 +11,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.NumberStringConverter;
 import objects.Exercise;
+import objects.Lift;
 import objects.Settings;
 import objects.WorkoutFile;
 
@@ -26,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ComplexController {
 
@@ -40,7 +47,7 @@ public class ComplexController {
 
     private int createdTabsSoFar = 0;
 
-    private List<Object> selectedExercises = null;
+    private List<Object> selectedLifts = null;
 
     public static ArrayList<Tab> unsavedTabs = new ArrayList<>();
 
@@ -96,17 +103,17 @@ public class ComplexController {
         WorkoutFile workoutFile = new WorkoutFile(tab);
         workoutFile.setExerciseList(Settings.getDefaultExerciseList());
 
-        // Exercises
+        // Lifts
         ScrollPane exerciseScrollPane = new ScrollPane();
         GridPane exercises = new GridPane();
         exercises.setPadding(new Insets(7, 7, 5, 7));
         exercises.setVgap(5);
 
-        Label exerciseHeader = new Label("Exercises");
+        Label exerciseHeader = new Label("Lifts");
         exerciseHeader.setStyle("-fx-font-size: 17");
         exercises.add(exerciseHeader, 0, 0);
 
-        // Exercise Actions
+        // Lift Actions
         GridPane exerciseActions = new GridPane();
         exerciseActions.setHgap(5);
 
@@ -117,77 +124,74 @@ public class ComplexController {
         exerciseActions.add(clear, 1, 0);
         exercises.add(exerciseActions, 0, 1);
 
-        // Exercise Records
+        // Lift Records
 
         TableView tableView = new TableView();
 
-        TableColumn<Exercise, String> column1 = new TableColumn<>("ID");
-        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        TableColumn<Exercise, String> column2 = new TableColumn<>("Name");
+        TableColumn<Lift, String> column2 = new TableColumn<>("Name");
         column2.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Exercise, String> column3 = new TableColumn<>("Description");
+        TableColumn<Lift, String> column3 = new TableColumn<>("Description");
         column3.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        TableColumn<Exercise, String> column4 = new TableColumn<>("Protraction");
+        TableColumn<Lift, String> column4 = new TableColumn<>("Protraction");
         column4.setCellValueFactory(new PropertyValueFactory<>("protraction"));
 
-        TableColumn<Exercise, String> column5 = new TableColumn<>("Retraction");
+        TableColumn<Lift, String> column5 = new TableColumn<>("Retraction");
         column5.setCellValueFactory(new PropertyValueFactory<>("retraction"));
 
-        TableColumn<Exercise, String> column6 = new TableColumn<>("Upward Rotation");
+        TableColumn<Lift, String> column6 = new TableColumn<>("Upward Rotation");
         column6.setCellValueFactory(new PropertyValueFactory<>("upwardRotation"));
 
-        TableColumn<Exercise, String> column7 = new TableColumn<>("Downward rotation");
+        TableColumn<Lift, String> column7 = new TableColumn<>("Downward rotation");
         column7.setCellValueFactory(new PropertyValueFactory<>("downwardRotation"));
 
-        TableColumn<Exercise, String> column8 = new TableColumn<>("Depression");
+        TableColumn<Lift, String> column8 = new TableColumn<>("Depression");
         column8.setCellValueFactory(new PropertyValueFactory<>("depression"));
 
-        TableColumn<Exercise, String> column9 = new TableColumn<>("Elevation");
+        TableColumn<Lift, String> column9 = new TableColumn<>("Elevation");
         column9.setCellValueFactory(new PropertyValueFactory<>("elevation"));
 
-        TableColumn<Exercise, String> column10 = new TableColumn<>("Internal rotation");
+        TableColumn<Lift, String> column10 = new TableColumn<>("Internal rotation");
         column10.setCellValueFactory(new PropertyValueFactory<>("internalRotation"));
 
-        TableColumn<Exercise, String> column11 = new TableColumn<>("External rotation");
+        TableColumn<Lift, String> column11 = new TableColumn<>("External rotation");
         column11.setCellValueFactory(new PropertyValueFactory<>("externalRotation"));
 
-        TableColumn<Exercise, String> column12 = new TableColumn<>("Hamstring");
+        TableColumn<Lift, String> column12 = new TableColumn<>("Hamstring");
         column12.setCellValueFactory(new PropertyValueFactory<>("hamstringEmphasis"));
 
-        TableColumn<Exercise, String> column13 = new TableColumn<>("Quad");
+        TableColumn<Lift, String> column13 = new TableColumn<>("Quad");
         column13.setCellValueFactory(new PropertyValueFactory<>("quadricepsEmphasis"));
 
-        TableColumn<Exercise, String> column14 = new TableColumn<>("Reference");
+        TableColumn<Lift, String> column14 = new TableColumn<>("Reference");
         column14.setCellValueFactory(new PropertyValueFactory<>("ratioReferenceExercise"));
 
-        TableColumn<Exercise, String> column15 = new TableColumn<>("Ratio");
+        TableColumn<Lift, String> column15 = new TableColumn<>("Ratio");
         column15.setCellValueFactory(new PropertyValueFactory<>("ratioOverReference"));
 
-        TableColumn<Exercise, String> column16 = new TableColumn<>("Sources");
+        TableColumn<Lift, String> column16 = new TableColumn<>("Sources");
         column16.setCellValueFactory(new PropertyValueFactory<>("sources"));
 
-        tableView.getColumns().addAll(column1, column2, column3, column4, column5, column6,
+        tableView.getColumns().addAll(column2, column3, column4, column5, column6,
                 column7, column8, column9, column10, column11, column12, column13, column14, column15, column16);
 
-        loadExercises(tableView, workoutFile.getExerciseList());
+        loadLifts(tableView, workoutFile.getLiftList());
 
         exercises.add(tableView, 0, 2);
 
         tableView.prefHeightProperty().bind(splitPane.heightProperty());
         tableView.prefWidthProperty().bind(splitPane.widthProperty());
 
-        TableView.TableViewSelectionModel<Exercise> selectionModel = tableView.getSelectionModel();
+        TableView.TableViewSelectionModel<Lift> selectionModel = tableView.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
 
         //for the buttons
-        ObservableList<Exercise> selectedItems = selectionModel.getSelectedItems();
-        selectedItems.addListener(new ListChangeListener<Exercise>() {
+        ObservableList<Lift> selectedItems = selectionModel.getSelectedItems();
+        selectedItems.addListener(new ListChangeListener<Lift>() {
             @Override
-            public void onChanged(Change<? extends Exercise> change) {
-                selectedExercises = Arrays.asList(change.getList().toArray());
+            public void onChanged(Change<? extends Lift> change) {
+                selectedLifts = Arrays.asList(change.getList().toArray());
                 System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -199,32 +203,121 @@ public class ComplexController {
 
         // Workouts
         ScrollPane workoutScrollPane = new ScrollPane();
-        workoutScrollPane.setMinWidth(200);
+        workoutScrollPane.setMinWidth(300);
         GridPane workouts = new GridPane();
+        workoutScrollPane.setContent(workouts);
         workouts.setPadding(new Insets(7, 7, 5, 7));
+        workouts.setVgap(5);
 
         Label workoutHeader = new Label("Workout");
         workoutHeader.setStyle("-fx-font-size: 17");
-        workoutHeader.setPadding(new Insets(0, 0, 5, 0));
 
         workouts.add(workoutHeader, 0, 0);
 
-        GridPane workoutRecords = new GridPane();
-        workouts.add(workoutRecords, 0, 1);
+        // workout Actions
+        GridPane workoutActions = new GridPane();
+        workoutActions.setHgap(5);
 
-        workoutScrollPane.setContent(workouts);
+        Button removeSelection = new Button("Remove selected");
+        Button clearSelection = new Button("Clear selection");
+
+        workoutActions.add(removeSelection, 0, 0);
+        workoutActions.add(clearSelection, 1, 0);
+        workouts.add(workoutActions, 0, 1);
+
+
+
+        TableView workoutView = new TableView();
+
+        TableColumn<Exercise, String> wColumn1 = new TableColumn<>("Name");
+        wColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Exercise, Integer> wColumn2 = new TableColumn<>("Weight");
+        wColumn2.setCellValueFactory(new PropertyValueFactory<>("weight"));
+        wColumn2.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        wColumn2.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Exercise, Integer>>() {
+                    @Override
+                    public void handle(TableColumn.CellEditEvent<Exercise, Integer> t) {
+                        ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setWeight(t.getNewValue());
+                        Integer newValue = t.getNewValue();
+                        System.out.println(newValue);
+                    }
+                }
+        );
+
+
+
+        TableColumn<Exercise, Integer> wColumn3 = new TableColumn<>("Sets");
+        wColumn3.setCellValueFactory(new PropertyValueFactory<>("sets"));
+        wColumn3.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        wColumn3.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Exercise, Integer>>() {
+                    @Override
+                    public void handle(TableColumn.CellEditEvent<Exercise, Integer> t) {
+                        ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setSets(t.getNewValue());
+                        Integer newValue = t.getNewValue();
+                        System.out.println(newValue);
+                    }
+                }
+        );
+
+
+        TableColumn<Exercise, Integer> wColumn4 = new TableColumn<>("Reps");
+        wColumn4.setCellValueFactory(new PropertyValueFactory<>("reps"));
+        wColumn4.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        wColumn4.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Exercise, Integer>>() {
+                    @Override
+                    public void handle(TableColumn.CellEditEvent<Exercise, Integer> t) {
+                        ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setReps(t.getNewValue());
+                        Integer newValue = t.getNewValue();
+                        System.out.println(newValue);
+                    }
+                }
+        );
+
+
+        workoutView.getColumns().addAll(wColumn1, wColumn2, wColumn3, wColumn4);
+
+        loadExercises(workoutView, workoutFile.getWorkout());
+
+
+        workouts.add(workoutView, 0, 2);
+
+        workoutView.prefHeightProperty().bind(splitPane.heightProperty());
+        workoutView.prefWidthProperty().bind(splitPane.widthProperty());
+        workoutView.setEditable(true);
+
         splitPane.getItems().add(workoutScrollPane);
 
 
-        // Strength Records
-        GridPane records = new GridPane();
+        // Stats
+        ScrollPane statsScrollPane = new ScrollPane();
+        statsScrollPane.setMaxWidth(300);
+        GridPane stats = new GridPane();
+        statsScrollPane.setContent(stats);
+        statsScrollPane.setPadding(new Insets(7, 7, 5, 7));
+        stats.setVgap(5);
 
-        Label recordsTitle = new Label();
-        recordsTitle.setText("Records");
+        Label statsHeader = new Label("Workout Stats");
+        statsHeader.setStyle("-fx-font-size: 17");
 
-        records.add(recordsTitle, 0, 0);
+        stats.add(statsHeader, 0, 0);
 
-        splitPane.getItems().add(records);
+        Label protraction = new Label("Protraction");
+        stats.add(protraction,0,1);
+
+        Label protractionValue = new Label(".5");
+        stats.add(protractionValue,1,1);
+
+        Label retraction = new Label("Retraction");
+        stats.add(retraction,0,2);
+
+        Label retractionValue = new Label(".75");
+        stats.add(retractionValue,1,2);
+
+        splitPane.getItems().add(statsScrollPane);
 
 
         tabFiles.put(tab, workoutFile);
@@ -235,9 +328,15 @@ public class ComplexController {
         tabPane.getSelectionModel().select(tab);
     }
 
-    private void loadExercises(TableView tableView, ArrayList<Exercise> exerciseList) {
-        for (Exercise exercise : exerciseList) {
-            tableView.getItems().add(exercise);
+    private void loadLifts(TableView tableView, ArrayList<Lift> liftList) {
+        for (Lift lift : liftList) {
+            tableView.getItems().add(lift);
+        }
+    }
+
+    private void loadExercises(TableView workoutView, ArrayList<Exercise> exercises) {
+        for (Lift l : Settings.getDefaultExerciseList()) {
+            workoutView.getItems().add(new Exercise(l,100,3,5));
         }
     }
 
@@ -252,7 +351,7 @@ public class ComplexController {
     public void saveTab(Tab tab) {
 
         try {
-            Exercise.writeExerciseCsv(tabFiles.get(tab));
+            Lift.writeExerciseCsv(tabFiles.get(tab));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {

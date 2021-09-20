@@ -2,16 +2,12 @@ package objects;
 
 import javafx.event.Event;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import javax.swing.JFileChooser;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class Settings {
@@ -121,11 +117,11 @@ public class Settings {
         this.yCoordinate = yCoordinate;
     }
 
-    public static ArrayList<Exercise> getDefaultExerciseList() { //TO DO: replace with reading from a config file
+    public static ArrayList<Lift> getDefaultExerciseList() { //TO DO: replace with reading from a config file
 
-        ArrayList<Exercise> result = new ArrayList<>();
+        ArrayList<Lift> result = new ArrayList<>();
 
-        Exercise squat = new Exercise("squat","Back Squat");
+        Lift squat = new Lift("squat","Back Squat");
         squat.setDescription("Barbell back squat. " +
                 "Olympic lift ratios regard the high bar squat. " +
                 "Powerlifting ratios regard the lowbar squat");
@@ -139,7 +135,7 @@ public class Settings {
 
         result.add(squat);
 
-        Exercise frontSquat = new Exercise("frontSquat","Front Squat");
+        Lift frontSquat = new Lift("frontSquat","Front Squat");
         frontSquat.setDescription("Olympic front squat");
         frontSquat.setHamstringEmphasis(.25);
         frontSquat.setQuadricepsEmphasis(.75);
@@ -152,7 +148,7 @@ public class Settings {
 
         result.add(frontSquat);
 
-        Exercise clean = new Exercise("clean","Clean");
+        Lift clean = new Lift("clean","Clean");
         clean.setDescription("Olympic Clean");
         clean.setElevation(1);
         clean.setHamstringEmphasis(.75);
@@ -166,7 +162,7 @@ public class Settings {
 
         result.add(clean);
 
-        Exercise cleanAndJerk = new Exercise("cleanAndJerk","Clean & Jerk");
+        Lift cleanAndJerk = new Lift("cleanAndJerk","Clean & Jerk");
         cleanAndJerk.setDescription("Olympic Clean & Jerk");
         cleanAndJerk.setUpwardRotation(1);
         cleanAndJerk.setElevation(1);
@@ -182,7 +178,7 @@ public class Settings {
 
         result.add(cleanAndJerk);
 
-        Exercise powerClean = new Exercise("powerClean","Power Clean");
+        Lift powerClean = new Lift("powerClean","Power Clean");
         powerClean.setDescription("Olympic Power Clean");
         powerClean.setElevation(1);
         powerClean.setHamstringEmphasis(.85);
@@ -196,7 +192,7 @@ public class Settings {
 
         result.add(powerClean);
 
-        Exercise snatch = new Exercise("snatch","Snatch");
+        Lift snatch = new Lift("snatch","Snatch");
         snatch.setDescription("Olympic Snatch");
         snatch.setElevation(1);
         snatch.setHamstringEmphasis(.85);
@@ -210,7 +206,7 @@ public class Settings {
 
         result.add(snatch);
 
-        Exercise deadlift = new Exercise("deadlift","Deadlift");
+        Lift deadlift = new Lift("deadlift","Deadlift");
         deadlift.setDescription("Powerlifting Deadlift");
         deadlift.setElevation(1);
         deadlift.setHamstringEmphasis(.9);
@@ -224,7 +220,7 @@ public class Settings {
 
         result.add(deadlift);
 
-        Exercise cleanPull = new Exercise("cleanPull","Clean Pull");
+        Lift cleanPull = new Lift("cleanPull","Clean Pull");
         cleanPull.setDescription("Olympic Clean Pull");
         cleanPull.setElevation(1);
         cleanPull.setHamstringEmphasis(.9);
@@ -238,7 +234,7 @@ public class Settings {
 
         result.add(cleanPull);
 
-        Exercise row = new Exercise("row","Pendlay Row");
+        Lift row = new Lift("row","Pendlay Row");
         row.setDescription("Bent-over Barbell Row orthogonal to the ground");
         row.setRetraction(1);
         row.setRatioReferenceExercise("powerClean");
@@ -250,7 +246,7 @@ public class Settings {
 
         result.add(row);
 
-        Exercise bench = new Exercise("bench","Bench Press");
+        Lift bench = new Lift("bench","Bench Press");
         bench.setDescription("Powerlifting Bench Press");
         bench.setProtraction(1);
         bench.setInternalRotation(1);
@@ -263,7 +259,7 @@ public class Settings {
 
         result.add(bench);
 
-        Exercise press = new Exercise("press","Military Press");
+        Lift press = new Lift("press","Military Press");
         press.setDescription("Standing Barbell Shoulder Press");
         press.setUpwardRotation(1);
         press.setInternalRotation(1);
@@ -276,7 +272,7 @@ public class Settings {
 
         result.add(press);
 
-        Exercise jerk = new Exercise("jerk","Jerk");
+        Lift jerk = new Lift("jerk","Jerk");
         jerk.setDescription("Olympic Split Jerk");
         jerk.setUpwardRotation(1);
         jerk.setInternalRotation(1);
@@ -289,7 +285,7 @@ public class Settings {
 
         result.add(jerk);
 
-        Exercise pushPress = new Exercise("pushPress","Push Press");
+        Lift pushPress = new Lift("pushPress","Push Press");
         pushPress.setDescription("Olympic Push Press");
         pushPress.setUpwardRotation(1);
         pushPress.setInternalRotation(1);
@@ -302,7 +298,7 @@ public class Settings {
 
         result.add(pushPress);
 
-        Exercise dip = new Exercise("dip","Dip");
+        Lift dip = new Lift("dip","Dip");
         dip.setDescription("Parallel Bars Calisthenic Dip. Ratio assumes body weight + added weight");
         dip.setProtraction(1);
         dip.setDepression(1);
@@ -316,7 +312,7 @@ public class Settings {
 
         result.add(dip);
 
-        Exercise chinUp = new Exercise("chinUp","Chin-up");
+        Lift chinUp = new Lift("chinUp","Chin-up");
         chinUp.setDescription("Calisthenic Chin-up. Ratio assumes body weight + added weight");
         chinUp.setDownwardRotation(1);
         chinUp.setRatioReferenceExercise("dip");
@@ -328,7 +324,7 @@ public class Settings {
 
         result.add(chinUp);
 
-        Exercise pullUp = new Exercise("pullUp","Pull-up");
+        Lift pullUp = new Lift("pullUp","Pull-up");
         pullUp.setDescription("Calisthenic Pull-up. Ratio assumes body weight + added weight");
         pullUp.setDownwardRotation(1);
         pullUp.setInternalRotation(1);
@@ -341,7 +337,7 @@ public class Settings {
 
         result.add(pullUp);
 
-        Exercise facePull = new Exercise("facePull","Face-pull");
+        Lift facePull = new Lift("facePull","Face-pull");
         facePull.setDescription("Cable/rope double biceps pose row");
         facePull.setRetraction(1);
         facePull.setExternalRotation(1);
@@ -352,7 +348,7 @@ public class Settings {
 
         result.add(facePull);
 
-        Exercise sideRise = new Exercise("sideRise","Side Rise");
+        Lift sideRise = new Lift("sideRise","Side Rise");
         sideRise.setDescription("Dumbbell/cable shoulder lateral rises");
         sideRise.setUpwardRotation(1);
 
@@ -362,7 +358,7 @@ public class Settings {
 
         result.add(sideRise);
 
-        Exercise shrug = new Exercise("shrug","Shrug");
+        Lift shrug = new Lift("shrug","Shrug");
         shrug.setDescription("Dumbbell/barbell shrugs");
         shrug.setUpwardRotation(1);
 
@@ -372,7 +368,7 @@ public class Settings {
 
         result.add(shrug);
 
-        Exercise latPullDown = new Exercise("latPullDown","Lat Pull-down");
+        Lift latPullDown = new Lift("latPullDown","Lat Pull-down");
         latPullDown.setDescription("Stiffed arm lat pull-down (bent-over pullover)");
         latPullDown.setDepression(1);
 
@@ -382,7 +378,7 @@ public class Settings {
 
         result.add(latPullDown);
 
-        Exercise rotatorCuff = new Exercise("rotatorCuff","Rotator Cuff");
+        Lift rotatorCuff = new Lift("rotatorCuff","Rotator Cuff");
         rotatorCuff.setDescription("External rotation for rotator cuff");
         rotatorCuff.setExternalRotation(1);
 
@@ -393,5 +389,13 @@ public class Settings {
         result.add(rotatorCuff);
 
         return result;
+    }
+
+    public static Lift getLift(String name) {
+        for (Lift lift : getDefaultExerciseList()) {
+            if (lift.getName().equals(name))
+                return lift;
+        }
+        return new Lift("notFound", "Not found");
     }
 }

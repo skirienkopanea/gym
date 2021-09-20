@@ -9,12 +9,21 @@ public class WorkoutFile {
     private Tab tab;
     private String path;
     private String title;
-    private ArrayList<Exercise> exerciseList;
-    private ArrayList<Workout> workoutList;
-    private ArrayList<Record<Exercise, Integer, Integer, Integer, Date>> independentRecordsList;
-    private Exercise selectedExercise;
-    private Workout selectedWorkout;
-    private Record selectedRecord;
+    public ArrayList<Lift> liftList;
+
+    public void setLiftList(ArrayList<Lift> liftList) {
+        this.liftList = liftList;
+    }
+
+    public ArrayList<Exercise> getWorkout() {
+        return workout;
+    }
+
+    public void setWorkout(ArrayList<Exercise> workout) {
+        this.workout = workout;
+    }
+
+    private ArrayList<Exercise> workout;
     private boolean saveAs;
     private boolean unSaved;
 
@@ -22,7 +31,8 @@ public class WorkoutFile {
         this.tab = tab;
         this.path = Settings.getHome();
         this.title = tab.getText();
-        this.exerciseList = Settings.getDefaultExerciseList();
+        this.liftList = Settings.getDefaultExerciseList();
+        this.workout = new ArrayList<>();
         this.saveAs = true;
         this.unSaved = false;
     }
@@ -33,30 +43,6 @@ public class WorkoutFile {
 
     public void setTab(Tab tab) {
         this.tab = tab;
-    }
-
-    public Exercise getSelectedExercise() {
-        return selectedExercise;
-    }
-
-    public void setSelectedExercise(Exercise selectedExercise) {
-        this.selectedExercise = selectedExercise;
-    }
-
-    public Workout getSelectedWorkout() {
-        return selectedWorkout;
-    }
-
-    public void setSelectedWorkout(Workout selectedWorkout) {
-        this.selectedWorkout = selectedWorkout;
-    }
-
-    public Record getSelectedRecord() {
-        return selectedRecord;
-    }
-
-    public void setSelectedRecord(Record selectedRecord) {
-        this.selectedRecord = selectedRecord;
     }
 
     public String getPath() {
@@ -75,28 +61,12 @@ public class WorkoutFile {
         this.title = title;
     }
 
-    public ArrayList<Exercise> getExerciseList() {
-        return exerciseList;
+    public ArrayList<Lift> getLiftList() {
+        return liftList;
     }
 
-    public void setExerciseList(ArrayList<Exercise> exerciseList) {
-        this.exerciseList = exerciseList;
-    }
-
-    public ArrayList<Workout> getWorkoutList() {
-        return workoutList;
-    }
-
-    public void setWorkoutList(ArrayList<Workout> workoutList) {
-        this.workoutList = workoutList;
-    }
-
-    public ArrayList<Record<Exercise, Integer, Integer, Integer, Date>> getIndependentRecordsList() {
-        return independentRecordsList;
-    }
-
-    public void setIndependentRecordsList(ArrayList<Record<Exercise, Integer, Integer, Integer, Date>> independentRecordsList) {
-        this.independentRecordsList = independentRecordsList;
+    public void setExerciseList(ArrayList<Lift> liftList) {
+        this.liftList = liftList;
     }
 
     public boolean isSaveAs() {
