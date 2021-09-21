@@ -161,54 +161,8 @@ public class Lift {
         this.sources = sources;
     }
 
-    public static void writeExerciseCsv(WorkoutFile workoutFile) throws FileNotFoundException {
-
-        String path = workoutFile.getPath();
-
-        if (workoutFile.isSaveAs()) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save workout");
-            fileChooser.setInitialDirectory(new File(workoutFile.getPath()));
-            fileChooser.setInitialFileName(workoutFile.getTitle());
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GYM", "*.gym"));
-
-            File file = fileChooser.showSaveDialog(new Stage());
-
-            path = file.getParent() + "\\";
-            workoutFile.setTitle(file.getName().substring(0,file.getName().length()-4));
-            workoutFile.setPath(path);
-        }
-
-        System.out.println(path);
-        Field[] fields = Lift.class.getDeclaredFields();
-        StringBuilder file = new StringBuilder("Exercises\r\n");
-        for (Field field : fields) {
-            file.append(field.getName() + ",");
-        }
-        file.deleteCharAt(file.length() - 1);
-        file.append("\r\n");
-
-        List<Lift> liftList = workoutFile.getLiftList();
-
-        for (Lift lift : liftList) {
-            for (Field field : fields) {
-                java.lang.reflect.Field.setAccessible(fields, true);
-                try {
-                    file.append(String.valueOf(field.get(lift)).replaceAll(",", ".") + ",");
-                } catch (IllegalAccessException e) {
-                    file.append(",");
-                    e.printStackTrace();
-                }
-            }
-            file.deleteCharAt(file.length() - 1);
-            file.append("\r\n");
-        }
-        PrintWriter writer = new PrintWriter(path + workoutFile.getTitle() + ".gym" );
-        writer.print(file);
-        writer.close();
-
-        //System.out.println(file);
-        workoutFile.setSaveAs(false);
-
+    @Override
+    public String toString(){
+        return id;
     }
 }

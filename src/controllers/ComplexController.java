@@ -1,7 +1,5 @@
 package controllers;
 
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -25,8 +23,6 @@ import objects.WorkoutFile;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-
-import static java.util.stream.Collectors.summingDouble;
 
 public class ComplexController {
 
@@ -59,8 +55,6 @@ public class ComplexController {
 
     private int createdTabsSoFar = 0;
 
-    private List<Object> selectedLifts = new ArrayList<>();
-    private List<Object> selectedExercises = new ArrayList<>();
     private ArrayList<Exercise> Workout = new ArrayList<>();
 
     public static ArrayList<Tab> unsavedTabs = new ArrayList<>();
@@ -115,7 +109,7 @@ public class ComplexController {
 
 
         WorkoutFile workoutFile = new WorkoutFile(tab);
-        workoutFile.setExerciseList(Settings.getDefaultExerciseList());
+        workoutFile.setLifts(Settings.getDefaultExerciseList());
 
         // Lifts
         ScrollPane exerciseScrollPane = new ScrollPane();
@@ -190,7 +184,7 @@ public class ComplexController {
         tableView.getColumns().addAll(column2, column3, column4, column5, column6,
                 column7, column8, column9, column10, column11, column12, column13, column14, column15, column16);
 
-        loadLifts(tableView, workoutFile.getLiftList());
+        loadLifts(tableView, workoutFile.getLifts());
 
         exercises.add(tableView, 0, 2);
 
@@ -201,13 +195,6 @@ public class ComplexController {
         liftSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
 
         //for the buttons
-        ObservableList<Lift> selectedLiftItems = liftSelectionModel.getSelectedItems();
-        selectedLiftItems.addListener(new ListChangeListener<Lift>() {
-            @Override
-            public void onChanged(Change<? extends Lift> change) {
-                selectedLifts = Arrays.asList(change.getList().toArray());
-            }
-        });
 
         clearLifts.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -221,7 +208,7 @@ public class ComplexController {
 
         // Stats
         ScrollPane statsScrollPane = new ScrollPane();
-        //statsScrollPane.setMaxWidth(300);
+        statsScrollPane.setMaxWidth(350);
         GridPane stats = new GridPane();
         statsScrollPane.setContent(stats);
         statsScrollPane.setPadding(new Insets(7, 7, 5, 7));
@@ -331,6 +318,10 @@ public class ComplexController {
 
         TableView workoutView = new TableView();
 
+        TableView.TableViewSelectionModel<Exercise> exerciseSelectionModel = workoutView.getSelectionModel();
+        exerciseSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+
+
         TableColumn<Exercise, String> wColumn1 = new TableColumn<>("Name");
         wColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
 
@@ -344,6 +335,7 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setWeight(t.getNewValue());
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
+                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
                     }
                 }
         );
@@ -360,6 +352,7 @@ public class ComplexController {
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
                         updateStats(workoutView);
+                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
                     }
                 }
         );
@@ -376,6 +369,7 @@ public class ComplexController {
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
                         updateStats(workoutView);
+                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
                     }
                 }
         );
@@ -390,6 +384,7 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setComments(t.getNewValue());
                         String newValue = t.getNewValue();
                         System.out.println(newValue);
+                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
                     }
                 }
         );
@@ -403,17 +398,6 @@ public class ComplexController {
         workoutView.prefWidthProperty().bind(splitPane.widthProperty());
         workoutView.setEditable(true);
 
-        TableView.TableViewSelectionModel<Exercise> exerciseSelectionModel = workoutView.getSelectionModel();
-        exerciseSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
-
-        //for the buttons
-        ObservableList<Exercise> selectedExerciseItems = exerciseSelectionModel.getSelectedItems();
-        selectedExerciseItems.addListener(new ListChangeListener<Exercise>() {
-            @Override
-            public void onChanged(Change<? extends Exercise> change) {
-                selectedExercises = Arrays.asList(change.getList().toArray());
-            }
-        });
 
         clearExercises.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -425,16 +409,18 @@ public class ComplexController {
         removeExercises.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                selectedExercises.forEach(exercise -> workoutView.getItems().remove(exercise));
+                exerciseSelectionModel.getSelectedItems().forEach(exercise -> workoutView.getItems().remove(exercise));
                 updateStats(workoutView);
+                tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
             }
         });
 
         trainLifts.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                selectedLifts.forEach(lift -> workoutView.getItems().add(new Exercise((Lift) lift, 0, 0, 0)));
+                liftSelectionModel.getSelectedItems().forEach(lift -> workoutView.getItems().add(new Exercise((Lift) lift, 0, 0, 0)));
                 updateStats(workoutView);
+                tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
             }
         });
 
@@ -519,7 +505,8 @@ public class ComplexController {
     public void saveTab(Tab tab) {
 
         try {
-            Lift.writeExerciseCsv(tabFiles.get(tab));
+            WorkoutFile.write(tabFiles.get(tab));
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
