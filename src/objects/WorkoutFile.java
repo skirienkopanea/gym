@@ -10,12 +10,15 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class WorkoutFile {
-    private Tab tab;
     private String path;
     private String title;
     public ArrayList<Lift> lifts;
+    private ArrayList<Exercise> workout;
+    private boolean saveAs;
+    private boolean unSaved;
 
     public void setLifts(ArrayList<Lift> lifts) {
         this.lifts = lifts;
@@ -29,26 +32,14 @@ public class WorkoutFile {
         this.workout = workout;
     }
 
-    private ArrayList<Exercise> workout;
-    private boolean saveAs;
-    private boolean unSaved;
 
-    public WorkoutFile(Tab tab) {
-        this.tab = tab;
+    public WorkoutFile(String title) {
+        this.title = title;
         this.path = Settings.getHome();
-        this.title = tab.getText();
         this.lifts = Settings.getDefaultExerciseList();
         this.workout = new ArrayList<>();
-        this.saveAs = true;
+        this.saveAs = true; //keep like this as default for new created workouts
         this.unSaved = false;
-    }
-
-    public Tab getTab() {
-        return tab;
-    }
-
-    public void setTab(Tab tab) {
-        this.tab = tab;
     }
 
     public String getPath() {
@@ -94,24 +85,24 @@ public class WorkoutFile {
         if (workoutFile.isSaveAs()) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save workout");
-            fileChooser.setInitialDirectory(new File(workoutFile.getPath()));
+            fileChooser.setInitialDirectory(new File(path));
             fileChooser.setInitialFileName(workoutFile.getTitle());
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GYM", "*.gym"));
 
             File file = fileChooser.showSaveDialog(new Stage());
 
             path = file.getParent() + "\\";
-            workoutFile.setTitle(file.getName().substring(0,file.getName().length()-4));
+            workoutFile.setTitle(file.getName().substring(0, file.getName().length() - 4));
             workoutFile.setPath(path);
         }
 
         System.out.println(path);
 
 
-        StringBuilder str = new StringBuilder(listToString(workoutFile.getLifts(),Lift.class));
-        str.append(listToString(workoutFile.getWorkout(),Exercise.class));
+        StringBuilder str = new StringBuilder(listToString(workoutFile.getLifts(), Lift.class));
+        str.append(listToString(workoutFile.getWorkout(), Exercise.class));
 
-        PrintWriter writer = new PrintWriter(path + workoutFile.getTitle() + ".gym" );
+        PrintWriter writer = new PrintWriter(path + workoutFile.getTitle() + ".gym");
         writer.print(str);
         writer.close();
 
@@ -144,4 +135,42 @@ public class WorkoutFile {
         }
         return str.toString();
     }
+
+    public static WorkoutFile open(WorkoutFile workoutFile) throws FileNotFoundException {
+
+        String path = workoutFile.getPath();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open workout");
+        fileChooser.setInitialDirectory(new File(path));
+
+        File file = fileChooser.showOpenDialog(new Stage());
+
+        path = file.getParent() + "\\";
+
+        WorkoutFile openFile = new WorkoutFile("");
+        openFile.setTitle(file.getName().substring(0, file.getName().length() - 4));
+        openFile.setPath(path);
+        openFile.setSaveAs(false);
+
+        Scanner sc = new Scanner(new File(file.getAbsolutePath()));
+
+        while (sc.hasNextLine())
+            System.out.println(sc.nextLine());
+
+        openFile.setLifts(readLifts(sc));
+        openFile.setWorkout(readExercises(sc));
+
+        return openFile;
+
+    }
+
+    public static ArrayList<Lift> readLifts(Scanner sc) {
+        return new ArrayList<>();
+    }
+
+    public static ArrayList<Exercise> readExercises(Scanner sc) {
+        return new ArrayList<>();
+    }
 }
+

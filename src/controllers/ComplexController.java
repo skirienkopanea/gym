@@ -61,6 +61,9 @@ public class ComplexController {
 
     private Map<Tab, WorkoutFile> tabFiles = new HashMap<>();
 
+    private Map<Tab, TableView> tabLiftViews = new HashMap<>();
+    private Map<Tab, TableView> tabWorkoutViews = new HashMap<>();
+
     public void createTab(ActionEvent actionEvent) {
         Tab tab = new Tab();
 
@@ -78,8 +81,7 @@ public class ComplexController {
         tab.setOnCloseRequest(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
-                int tabNumber = tabPane.getSelectionModel().getSelectedIndex();
-                Tab tab = tabPane.getTabs().get(tabNumber);
+                Tab tab = tabPane.getSelectionModel().getSelectedItem();
                 if (unsavedTabs.contains(tab) && Settings.confirmClose(event)) {
                     unsavedTabs.remove(tab);
                 }
@@ -108,7 +110,7 @@ public class ComplexController {
         splitPane.setFocusTraversable(true);
 
 
-        WorkoutFile workoutFile = new WorkoutFile(tab);
+        WorkoutFile workoutFile = new WorkoutFile(tab.getText());
         workoutFile.setLifts(Settings.getDefaultExerciseList());
 
         // Lifts
@@ -135,6 +137,8 @@ public class ComplexController {
         // Lift Records
 
         TableView tableView = new TableView();
+
+        tabLiftViews.put(tab,tableView);
 
         TableColumn<Lift, String> column2 = new TableColumn<>("Name");
         column2.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -317,6 +321,7 @@ public class ComplexController {
 
 
         TableView workoutView = new TableView();
+        tabWorkoutViews.put(tab,workoutView);
 
         TableView.TableViewSelectionModel<Exercise> exerciseSelectionModel = workoutView.getSelectionModel();
         exerciseSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
@@ -335,7 +340,8 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setWeight(t.getNewValue());
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
-                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+                        update(workoutView, tab);
+
                     }
                 }
         );
@@ -351,8 +357,7 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setSets(t.getNewValue());
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
-                        updateStats(workoutView);
-                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+                        update(workoutView, tab);
                     }
                 }
         );
@@ -368,8 +373,7 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setReps(t.getNewValue());
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
-                        updateStats(workoutView);
-                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+                        update(workoutView, tab);
                     }
                 }
         );
@@ -384,7 +388,7 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setComments(t.getNewValue());
                         String newValue = t.getNewValue();
                         System.out.println(newValue);
-                        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+                        update(workoutView, tab);
                     }
                 }
         );
@@ -409,9 +413,10 @@ public class ComplexController {
         removeExercises.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                exerciseSelectionModel.getSelectedItems().forEach(exercise -> workoutView.getItems().remove(exercise));
-                updateStats(workoutView);
-                tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+                ArrayList<Object> temp = new ArrayList<>(exerciseSelectionModel.getSelectedItems());
+                temp.stream()
+                        .forEach(exercise -> workoutView.getItems().remove(exercise));
+                update(workoutView, tab);
             }
         });
 
@@ -419,8 +424,7 @@ public class ComplexController {
             @Override
             public void handle(ActionEvent event) {
                 liftSelectionModel.getSelectedItems().forEach(lift -> workoutView.getItems().add(new Exercise((Lift) lift, 0, 0, 0)));
-                updateStats(workoutView);
-                tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+                update(workoutView, tab);
             }
         });
 
@@ -436,6 +440,14 @@ public class ComplexController {
         tab.setContent(splitPane);
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
+    }
+
+    private void update(TableView workoutView, Tab tab) {
+        updateStats(workoutView);
+        tabFiles.get(tab).setWorkout(new ArrayList<>(workoutView.getItems()));
+
+        if (!tabFiles.get(tab).isUnSaved())
+            setTabUnsaved(tab);
     }
 
     private void updateStats(TableView workoutView) {
@@ -509,19 +521,12 @@ public class ComplexController {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            alert("Write error","Could not save file. Perhaps it is being used by another process");
         } catch (NullPointerException e) {
             return;
         }
 
-        String substr = tabFiles.get(tab).getTitle();
-        tab.setText(substr);
-
-        Stage stage = (Stage) tabPane.getScene().getWindow();
-        stage.setTitle(tabFiles.get(tab).getPath() + tabFiles.get(tab).getTitle() + ".gym");
-
-        tabFiles.get(tab).setUnSaved(false);
-
-        unsavedTabs.remove(tab);
+        refreshTab(tab);
 
     }
 
@@ -590,13 +595,76 @@ public class ComplexController {
     }
 
     public void helpPopUp() {
+        alert("About", "Source code available at github.com/skirienkopanea/gym");
+    }
+
+    public void alert(String title, String text){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("About");
-        alert.setHeaderText("Source code available at github.com/skirienkopanea/gym");
+        alert.setTitle(title);
+        alert.setHeaderText(text);
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image("resources/images/icon.png"));
 
         alert.showAndWait();
+    }
+
+    public void open(ActionEvent actionEvent) {
+        try {
+            Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
+            WorkoutFile currentWorkoutFile = tabFiles.get(currentTab);
+
+            WorkoutFile newWorkoutFile;
+            if (currentWorkoutFile != null) {
+                newWorkoutFile = WorkoutFile.open(currentWorkoutFile);
+            } else {
+                newWorkoutFile = WorkoutFile.open(new WorkoutFile(""));
+            }
+
+            createTab(actionEvent);
+
+            Tab newTab = tabPane.getSelectionModel().getSelectedItem();
+            tabFiles.get(newTab).setTitle(newWorkoutFile.getTitle());
+            tabFiles.get(newTab).setPath(newWorkoutFile.getPath());
+            tabFiles.get(newTab).setLifts(newWorkoutFile.getLifts());
+            tabFiles.get(newTab).setWorkout(newWorkoutFile.getWorkout());
+            tabFiles.get(newTab).setSaveAs(false);
+            tabFiles.get(newTab).setUnSaved(false);
+
+            refreshTab(newTab);
+
+
+        } catch (FileNotFoundException e){
+            alert("Open error","Could not open file");
+        } catch (NullPointerException e){
+
+        }
+
+    }
+
+    private void refreshTab(Tab tab) {
+        String substr = tabFiles.get(tab).getTitle();
+        tab.setText(substr);
+
+        Stage stage = (Stage) tabPane.getScene().getWindow();
+        stage.setTitle(tabFiles.get(tab).getPath() + tabFiles.get(tab).getTitle() + ".gym");
+
+        tabFiles.get(tab).setUnSaved(false);
+
+        unsavedTabs.remove(tab);
+
+        updateView(tabLiftViews.get(tab), tabFiles.get(tab).getLifts());
+
+        updateView(tabWorkoutViews.get(tab), tabFiles.get(tab).getWorkout());
+
+    }
+
+    private void updateView(TableView tw, List list) {
+        ArrayList<Object> temp = new ArrayList<>(tw.getItems());
+        temp.stream()
+                .forEach(lift -> tw.getItems().remove(lift));
+
+        list.stream()
+                .forEach(lift -> tw.getItems().add(lift));
     }
 }
