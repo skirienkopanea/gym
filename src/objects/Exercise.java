@@ -15,14 +15,6 @@ public class Exercise {
         this.reps = reps;
     }
 
-    public Lift getExercise() {
-        return lift;
-    }
-
-    public void setExercise(Lift exercise) {
-        this.lift = exercise;
-    }
-
     public String getName() {
         return name;
     }

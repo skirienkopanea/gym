@@ -300,7 +300,6 @@ public class ComplexController {
             @Override
             public void onChanged(Change<? extends Exercise> change) {
                 selectedExercises = Arrays.asList(change.getList().toArray());
-                System.out.println("Selected exercises: " + change.getList());
             }
         });
 
@@ -308,6 +307,13 @@ public class ComplexController {
             @Override
             public void handle(ActionEvent event) {
                 exerciseSelectionModel.clearSelection();
+            }
+        });
+
+        removeExercises.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                selectedExercises.forEach(exercise -> workoutView.getItems().remove(exercise));
             }
         });
 
