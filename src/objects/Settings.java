@@ -360,7 +360,7 @@ public class Settings {
 
         Lift shrug = new Lift("shrug","Shrug");
         shrug.setDescription("Dumbbell/barbell shrugs");
-        shrug.setUpwardRotation(1);
+        shrug.setElevation(1);
 
         ArrayList<String> shrugSources = new ArrayList<>();
         shrugSources.add("https://exrx.net/WeightExercises/TrapeziusUpper/DBShrug");

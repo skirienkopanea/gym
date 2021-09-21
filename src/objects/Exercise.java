@@ -6,6 +6,7 @@ public class Exercise {
     private int weight;
     private int sets;
     private int reps;
+    private String comments;
 
     public Exercise(Lift lift, int weight, int sets, int reps){
         this.lift = lift;
@@ -53,5 +54,13 @@ public class Exercise {
 
     public void setReps(int reps) {
         this.reps = reps;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }

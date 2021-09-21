@@ -24,11 +24,9 @@ import objects.Settings;
 import objects.WorkoutFile;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static java.util.stream.Collectors.summingDouble;
 
 public class ComplexController {
 
@@ -41,10 +39,29 @@ public class ComplexController {
     @FXML
     private Label welcomeMessageLabel;
 
+    @FXML
+    private Label protractionValue = new Label("0.0");
+    private Label retractionValue = new Label("0.0");
+    private Label upwardRotationValue = new Label("0.0");
+    private Label downwardRotationValue = new Label("0.0");
+    private Label depressionValue = new Label("0.0");
+    private Label elevationValue = new Label("0.0");
+    private Label internalRotationValue = new Label("0.0");
+    private Label externalRotationValue = new Label("0.0");
+    private Label hamstringEmphasisValue = new Label("0.0");
+    private Label quadricepsEmphasisValue = new Label("0.0");
+
+    private Label horizontalRatioValue = new Label("NaN");
+    private Label upwardRatioValue = new Label("NaN");
+    private Label depressionRatioValue = new Label("NaN");
+    private Label rotationRatioValue = new Label("NaN");
+    private Label quadRatioValue = new Label("NaN");
+
     private int createdTabsSoFar = 0;
 
     private List<Object> selectedLifts = new ArrayList<>();
     private List<Object> selectedExercises = new ArrayList<>();
+    private ArrayList<Exercise> Workout = new ArrayList<>();
 
     public static ArrayList<Tab> unsavedTabs = new ArrayList<>();
 
@@ -189,7 +206,6 @@ public class ComplexController {
             @Override
             public void onChanged(Change<? extends Lift> change) {
                 selectedLifts = Arrays.asList(change.getList().toArray());
-                System.out.println("Selected lifts: " + change.getList());
             }
         });
 
@@ -201,7 +217,92 @@ public class ComplexController {
         });
 
         exerciseScrollPane.setContent(exercises);
-        splitPane.getItems().add(exerciseScrollPane);
+
+
+        // Stats
+        ScrollPane statsScrollPane = new ScrollPane();
+        //statsScrollPane.setMaxWidth(300);
+        GridPane stats = new GridPane();
+        statsScrollPane.setContent(stats);
+        statsScrollPane.setPadding(new Insets(7, 7, 5, 7));
+        stats.setVgap(5);
+
+        Label statsHeader = new Label("Workout Stats");
+        statsHeader.setStyle("-fx-font-size: 17");
+
+        stats.add(statsHeader, 0, 0);
+
+        Label protraction = new Label("Protraction");
+        stats.add(protraction, 0, 1);
+        stats.add(protractionValue, 1, 1);
+
+        Label retraction = new Label("Retraction");
+        stats.add(retraction, 0, 2);
+        stats.add(retractionValue, 1, 2);
+
+        Label upwardRotation = new Label("Up rotation");
+        stats.add(upwardRotation, 0, 3);
+        stats.add(upwardRotationValue, 1, 3);
+
+        Label downwardRotation = new Label("Down rotation");
+        stats.add(downwardRotation, 0, 4);
+        stats.add(downwardRotationValue, 1, 4);
+
+        Label depression = new Label("Depression");
+        stats.add(depression, 0, 5);
+        stats.add(depressionValue, 1, 5);
+
+        Label elevation = new Label("Elevation");
+        stats.add(elevation, 0, 6);
+        stats.add(elevationValue, 1, 6);
+
+        Label internalRotation = new Label("Internal rotation");
+        stats.add(internalRotation, 0, 7);
+        stats.add(internalRotationValue, 1, 7);
+
+        Label externalRotation = new Label("External rotation");
+        stats.add(externalRotation, 0, 8);
+        stats.add(externalRotationValue, 1, 8);
+
+        Label hamstringEmphasis = new Label("Ham emphasis");
+        stats.add(hamstringEmphasis, 0, 9);
+        stats.add(hamstringEmphasisValue, 1, 9);
+
+        Label quadricepsEmphasis = new Label("Quad emphasis");
+        stats.add(quadricepsEmphasis, 0, 10);
+        stats.add(quadricepsEmphasisValue, 1, 10);
+
+        stats.add(new Separator(), 0, 11);
+
+        Label horizontalRatio = new Label("Horizontal ratio");
+        stats.add(horizontalRatio, 0, 12);
+        stats.add(horizontalRatioValue, 1, 12);
+
+        Label upwardRatio = new Label("Upward ratio");
+        stats.add(upwardRatio, 0, 13);
+        stats.add(upwardRatioValue, 1, 13);
+
+        Label depressionRatio = new Label("Depression ratio");
+        stats.add(depressionRatio, 0, 14);
+        stats.add(depressionRatioValue, 1, 14);
+
+        Label rotationRatio = new Label("Rotation ratio");
+        stats.add(rotationRatio, 0, 15);
+        stats.add(rotationRatioValue, 1, 15);
+
+        Label quadRatio = new Label("Quad ratio");
+        stats.add(quadRatio, 0, 16);
+        stats.add(quadRatioValue, 1, 16);
+
+        stats.add(new Separator(), 0, 17);
+
+        Label disclaimer = new Label("Ratios regard push/pull movements: \n" +
+                "H = protraction/retraction\n" +
+                "U = upward/downward rotation\n" +
+                "D = depression/elevation\n" +
+                "R = internal/external rotation\n" +
+                "Q = quadriceps/hamstring emphasis");
+        stats.add(disclaimer, 0, 18);
 
         // Workouts
         ScrollPane workoutScrollPane = new ScrollPane();
@@ -228,7 +329,6 @@ public class ComplexController {
         workouts.add(workoutActions, 0, 1);
 
 
-
         TableView workoutView = new TableView();
 
         TableColumn<Exercise, String> wColumn1 = new TableColumn<>("Name");
@@ -249,7 +349,6 @@ public class ComplexController {
         );
 
 
-
         TableColumn<Exercise, Integer> wColumn3 = new TableColumn<>("Sets");
         wColumn3.setCellValueFactory(new PropertyValueFactory<>("sets"));
         wColumn3.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
@@ -260,6 +359,7 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setSets(t.getNewValue());
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
+                        updateStats(workoutView);
                     }
                 }
         );
@@ -275,12 +375,27 @@ public class ComplexController {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setReps(t.getNewValue());
                         Integer newValue = t.getNewValue();
                         System.out.println(newValue);
+                        updateStats(workoutView);
+                    }
+                }
+        );
+
+        TableColumn<Exercise, String> wColumn5 = new TableColumn<>("Comments");
+        wColumn5.setCellValueFactory(new PropertyValueFactory<>("comments"));
+        wColumn5.setCellFactory(TextFieldTableCell.forTableColumn());
+        wColumn5.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Exercise, String>>() {
+                    @Override
+                    public void handle(TableColumn.CellEditEvent<Exercise, String> t) {
+                        ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setComments(t.getNewValue());
+                        String newValue = t.getNewValue();
+                        System.out.println(newValue);
                     }
                 }
         );
 
 
-        workoutView.getColumns().addAll(wColumn1, wColumn2, wColumn3, wColumn4);
+        workoutView.getColumns().addAll(wColumn1, wColumn2, wColumn3, wColumn4, wColumn5);
 
         workouts.add(workoutView, 0, 2);
 
@@ -311,44 +426,21 @@ public class ComplexController {
             @Override
             public void handle(ActionEvent event) {
                 selectedExercises.forEach(exercise -> workoutView.getItems().remove(exercise));
+                updateStats(workoutView);
             }
         });
 
         trainLifts.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                selectedLifts.forEach(lift -> workoutView.getItems().add(new Exercise((Lift) lift,0,0,0)));
+                selectedLifts.forEach(lift -> workoutView.getItems().add(new Exercise((Lift) lift, 0, 0, 0)));
+                updateStats(workoutView);
             }
         });
 
+
+        splitPane.getItems().add(exerciseScrollPane);
         splitPane.getItems().add(workoutScrollPane);
-
-
-        // Stats
-        ScrollPane statsScrollPane = new ScrollPane();
-        statsScrollPane.setMaxWidth(300);
-        GridPane stats = new GridPane();
-        statsScrollPane.setContent(stats);
-        statsScrollPane.setPadding(new Insets(7, 7, 5, 7));
-        stats.setVgap(5);
-
-        Label statsHeader = new Label("Workout Stats");
-        statsHeader.setStyle("-fx-font-size: 17");
-
-        stats.add(statsHeader, 0, 0);
-
-        Label protraction = new Label("Protraction");
-        stats.add(protraction,0,1);
-
-        Label protractionValue = new Label(".5");
-        stats.add(protractionValue,1,1);
-
-        Label retraction = new Label("Retraction");
-        stats.add(retraction,0,2);
-
-        Label retractionValue = new Label(".75");
-        stats.add(retractionValue,1,2);
-
         splitPane.getItems().add(statsScrollPane);
 
 
@@ -358,6 +450,56 @@ public class ComplexController {
         tab.setContent(splitPane);
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
+    }
+
+    private void updateStats(TableView workoutView) {
+
+        Workout = new ArrayList<>(workoutView.getItems());
+
+        double protraction = 0;
+        double retraction = 0;
+        double upwardRotation = 0;
+        double downwardRotation = 0;
+        double depression = 0;
+        double elevation = 0;
+        double internalRotation = 0;
+        double externalRotation = 0;
+        double hamstringEmphasis = 0;
+        double quadricepsEmphasis = 0;
+
+        for (Exercise exercise : Workout) {
+            int volume = exercise.getSets() * exercise.getReps();
+            protraction += volume * exercise.getLift().getProtraction();
+            retraction += volume * exercise.getLift().getRetraction();
+            upwardRotation += volume * exercise.getLift().getUpwardRotation();
+            downwardRotation += volume * exercise.getLift().getDownwardRotation();
+            depression += volume * exercise.getLift().getDepression();
+            elevation += volume * exercise.getLift().getElevation();
+            internalRotation += volume * exercise.getLift().getInternalRotation();
+            externalRotation += volume * exercise.getLift().getExternalRotation();
+            hamstringEmphasis += volume * exercise.getLift().getHamstringEmphasis();
+            quadricepsEmphasis += volume * exercise.getLift().getQuadricepsEmphasis();
+
+        }
+
+        protractionValue.setText(String.valueOf(protraction));
+        retractionValue.setText(String.valueOf(retraction));
+        upwardRotationValue.setText(String.valueOf(upwardRotation));
+        downwardRotationValue.setText(String.valueOf(downwardRotation));
+        depressionValue.setText(String.valueOf(depression));
+        elevationValue.setText(String.valueOf(elevation));
+        internalRotationValue.setText(String.valueOf(internalRotation));
+        externalRotationValue.setText(String.valueOf(externalRotation));
+        hamstringEmphasisValue.setText(String.valueOf(hamstringEmphasis));
+        quadricepsEmphasisValue.setText(String.valueOf(quadricepsEmphasis));
+
+        horizontalRatioValue.setText(String.valueOf(protraction/retraction));
+        upwardRatioValue.setText(String.valueOf(upwardRotation/downwardRotation));
+        depressionRatioValue.setText(String.valueOf(depression/elevation));
+        rotationRatioValue.setText(String.valueOf(internalRotation/externalRotation));
+        quadRatioValue.setText(String.valueOf(quadricepsEmphasis/hamstringEmphasis));
+
+
     }
 
     private void loadLifts(TableView tableView, ArrayList<Lift> liftList) {
