@@ -282,9 +282,6 @@ public class ComplexController {
 
         workoutView.getColumns().addAll(wColumn1, wColumn2, wColumn3, wColumn4);
 
-        loadExercises(workoutView, workoutFile.getWorkout());
-
-
         workouts.add(workoutView, 0, 2);
 
         workoutView.prefHeightProperty().bind(splitPane.heightProperty());
@@ -314,6 +311,13 @@ public class ComplexController {
             @Override
             public void handle(ActionEvent event) {
                 selectedExercises.forEach(exercise -> workoutView.getItems().remove(exercise));
+            }
+        });
+
+        trainLifts.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                selectedLifts.forEach(lift -> workoutView.getItems().add(new Exercise((Lift) lift,0,0,0)));
             }
         });
 
@@ -359,12 +363,6 @@ public class ComplexController {
     private void loadLifts(TableView tableView, ArrayList<Lift> liftList) {
         for (Lift lift : liftList) {
             tableView.getItems().add(lift);
-        }
-    }
-
-    private void loadExercises(TableView workoutView, ArrayList<Exercise> exercises) {
-        for (Lift l : Settings.getDefaultExerciseList()) {
-            workoutView.getItems().add(new Exercise(l,100,3,5));
         }
     }
 
