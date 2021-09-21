@@ -11,8 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -20,7 +18,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.util.converter.NumberStringConverter;
 import objects.Exercise;
 import objects.Lift;
 import objects.Settings;
@@ -32,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ComplexController {
 
@@ -47,7 +43,8 @@ public class ComplexController {
 
     private int createdTabsSoFar = 0;
 
-    private List<Object> selectedLifts = null;
+    private List<Object> selectedLifts = new ArrayList<>();
+    private List<Object> selectedExercises = new ArrayList<>();
 
     public static ArrayList<Tab> unsavedTabs = new ArrayList<>();
 
@@ -117,11 +114,11 @@ public class ComplexController {
         GridPane exerciseActions = new GridPane();
         exerciseActions.setHgap(5);
 
-        Button train = new Button("Train selected");
-        Button clear = new Button("Clear selection");
+        Button trainLifts = new Button("Train selected");
+        Button clearLifts = new Button("Clear selection");
 
-        exerciseActions.add(train, 0, 0);
-        exerciseActions.add(clear, 1, 0);
+        exerciseActions.add(trainLifts, 0, 0);
+        exerciseActions.add(clearLifts, 1, 0);
         exercises.add(exerciseActions, 0, 1);
 
         // Lift Records
@@ -183,20 +180,25 @@ public class ComplexController {
         tableView.prefHeightProperty().bind(splitPane.heightProperty());
         tableView.prefWidthProperty().bind(splitPane.widthProperty());
 
-        TableView.TableViewSelectionModel<Lift> selectionModel = tableView.getSelectionModel();
-        selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+        TableView.TableViewSelectionModel<Lift> liftSelectionModel = tableView.getSelectionModel();
+        liftSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
 
         //for the buttons
-        ObservableList<Lift> selectedItems = selectionModel.getSelectedItems();
-        selectedItems.addListener(new ListChangeListener<Lift>() {
+        ObservableList<Lift> selectedLiftItems = liftSelectionModel.getSelectedItems();
+        selectedLiftItems.addListener(new ListChangeListener<Lift>() {
             @Override
             public void onChanged(Change<? extends Lift> change) {
                 selectedLifts = Arrays.asList(change.getList().toArray());
-                System.out.println("Selection changed: " + change.getList());
+                System.out.println("Selected lifts: " + change.getList());
             }
         });
 
-        selectionModel.clearSelection();
+        clearLifts.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                liftSelectionModel.clearSelection();
+            }
+        });
 
         exerciseScrollPane.setContent(exercises);
         splitPane.getItems().add(exerciseScrollPane);
@@ -218,11 +220,11 @@ public class ComplexController {
         GridPane workoutActions = new GridPane();
         workoutActions.setHgap(5);
 
-        Button removeSelection = new Button("Remove selected");
-        Button clearSelection = new Button("Clear selection");
+        Button removeExercises = new Button("Remove selected");
+        Button clearExercises = new Button("Clear selection");
 
-        workoutActions.add(removeSelection, 0, 0);
-        workoutActions.add(clearSelection, 1, 0);
+        workoutActions.add(removeExercises, 0, 0);
+        workoutActions.add(clearExercises, 1, 0);
         workouts.add(workoutActions, 0, 1);
 
 
@@ -288,6 +290,26 @@ public class ComplexController {
         workoutView.prefHeightProperty().bind(splitPane.heightProperty());
         workoutView.prefWidthProperty().bind(splitPane.widthProperty());
         workoutView.setEditable(true);
+
+        TableView.TableViewSelectionModel<Exercise> exerciseSelectionModel = workoutView.getSelectionModel();
+        exerciseSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+
+        //for the buttons
+        ObservableList<Exercise> selectedExerciseItems = exerciseSelectionModel.getSelectedItems();
+        selectedExerciseItems.addListener(new ListChangeListener<Exercise>() {
+            @Override
+            public void onChanged(Change<? extends Exercise> change) {
+                selectedExercises = Arrays.asList(change.getList().toArray());
+                System.out.println("Selected exercises: " + change.getList());
+            }
+        });
+
+        clearExercises.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                exerciseSelectionModel.clearSelection();
+            }
+        });
 
         splitPane.getItems().add(workoutScrollPane);
 
