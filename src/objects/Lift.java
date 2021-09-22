@@ -24,8 +24,6 @@ public class Lift {
     private double externalRotation;
     private double hamstringEmphasis;
     private double quadricepsEmphasis;
-    private String ratioReferenceExercise;
-    private double ratioOverReference;
     private ArrayList<String> sources;
 
     public Lift(String id, String name) {
@@ -137,22 +135,6 @@ public class Lift {
         this.quadricepsEmphasis = quadricepsEmphasis;
     }
 
-    public String getRatioReferenceExercise() {
-        return ratioReferenceExercise;
-    }
-
-    public void setRatioReferenceExercise(String ratioReferenceExercise) {
-        this.ratioReferenceExercise = ratioReferenceExercise;
-    }
-
-    public double getRatioOverReference() {
-        return ratioOverReference;
-    }
-
-    public void setRatioOverReference(double ratioOverReference) {
-        this.ratioOverReference = ratioOverReference;
-    }
-
     public ArrayList<String> getSources() {
         return sources;
     }
@@ -164,5 +146,13 @@ public class Lift {
     @Override
     public String toString(){
         return id;
+    }
+
+    public static Lift getLift(String id, ArrayList<Lift> lifts) {
+        for (Lift lift : lifts) {
+            if (lift.getId().equals(id))
+                return lift;
+        }
+        return new Lift("notFound", "Not found");
     }
 }

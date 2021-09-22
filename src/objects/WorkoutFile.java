@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class WorkoutFile {
     private String path;
@@ -113,7 +111,7 @@ public class WorkoutFile {
 
     private static String listToString(List objects, Class c) {
         Field[] fields = c.getDeclaredFields();
-        StringBuilder str = new StringBuilder(c.getName() + "s\r\n");
+        StringBuilder str = new StringBuilder("\r\n" + c.getName() + "s\r\n");
         for (Field field : fields) {
             str.append(field.getName() + ",");
         }
@@ -121,8 +119,8 @@ public class WorkoutFile {
         str.append("\r\n");
 
         for (Object object : objects) {
+            Field.setAccessible(fields, true);
             for (Field field : fields) {
-                Field.setAccessible(fields, true);
                 try {
                     str.append(String.valueOf(field.get(object)).replaceAll(",", ".") + ",");
                 } catch (IllegalAccessException e) {
@@ -143,6 +141,7 @@ public class WorkoutFile {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open workout");
         fileChooser.setInitialDirectory(new File(path));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GYM", "*.gym"));
 
         File file = fileChooser.showOpenDialog(new Stage());
 
@@ -155,22 +154,112 @@ public class WorkoutFile {
 
         Scanner sc = new Scanner(new File(file.getAbsolutePath()));
 
-        while (sc.hasNextLine())
-            System.out.println(sc.nextLine());
-
-        openFile.setLifts(readLifts(sc));
-        openFile.setWorkout(readExercises(sc));
+        ArrayList<Lift> lifts = readLifts(sc);
+        openFile.setLifts(lifts);
+        openFile.setWorkout(readExercises(sc,lifts));
 
         return openFile;
 
     }
 
     public static ArrayList<Lift> readLifts(Scanner sc) {
-        return new ArrayList<>();
-    }
+        sc.nextLine(); //skip empty line
+        sc.useDelimiter(",|[\\r\\n]+");
+        ArrayList<Lift> lifts = new ArrayList<>();
+        if (sc.hasNext("objects.Lifts")) {
+            System.out.println(sc.nextLine()); //skip object.Class
+            System.out.println(sc.nextLine()); //skip object field headers
+            Field[] fields = Lift.class.getDeclaredFields();
+            Field.setAccessible(fields, true);
+            while (!sc.hasNext("objects.Exercises")) {
 
-    public static ArrayList<Exercise> readExercises(Scanner sc) {
-        return new ArrayList<>();
+                Lift lift = new Lift("", "");
+
+                for (Field field : fields) {
+                    try {
+                        System.out.print(field.getType().getSimpleName());
+                        switch(field.getType().getSimpleName()){
+                            case "String":
+                                String str = sc.next();
+                                System.out.println(": " + str);
+                                field.set(lift, str);
+                                break;
+                            case "double":
+                                double d = sc.nextDouble();
+                                System.out.println(": " + d);
+                                field.set(lift,d);
+                                break;
+                            case "ArrayList":
+                                String arr = sc.next();
+                                ArrayList<String> strs = new ArrayList<>();
+                                Arrays.asList(arr.substring(1,arr.length()-1).split("\\. ")).stream()
+                                .forEach(s -> strs.add(s));
+                                System.out.println(strs);
+                                field.set(lift,strs);
+                                break;
+                        }
+
+                    } catch (IllegalAccessException e){
+
+                }
+
+            }
+                lifts.add(lift);
+        }
+
+    }
+        return lifts;
+}
+
+    public static ArrayList<Exercise> readExercises(Scanner sc, ArrayList<Lift> lifts) {
+        sc.nextLine(); //skip empty line
+        sc.nextLine(); //somehow needs to skip another line...
+        sc.useDelimiter(",|[\\r\\n]+");
+        ArrayList<Exercise> workout = new ArrayList<>();
+        if (sc.hasNext("objects.Exercises")) {
+            System.out.println(sc.nextLine()); //skip object.Class
+            System.out.println(sc.nextLine()); //skip object field headers
+
+            Field[] fields = Exercise.class.getDeclaredFields();
+            Field.setAccessible(fields, true);
+            while (sc.hasNextLine()) {
+
+                Exercise exercise = new Exercise(new Lift("404","404n"),0,0,0);
+
+                for (Field field : fields) {
+                    try {
+                        System.out.print(field.getType().getSimpleName());
+                        switch(field.getType().getSimpleName()){
+                            case "Lift":
+                                String id = sc.next();
+                                Lift l = Lift.getLift(id, lifts);
+                                System.out.println(" (" + id + "): " + l);
+                                field.set(exercise,l);
+                                break;
+                            case "String":
+                                String str = sc.next();
+                                System.out.println(": " + str);
+                                field.set(exercise, str);
+                                break;
+                            case "int":
+                                int n = sc.nextInt();
+                                System.out.println(": " + n);
+                                field.set(exercise,n);
+                                break;
+                        }
+
+                    } catch (IllegalAccessException e){
+
+                    } catch (NoSuchElementException e){
+                        return workout; //skip 404 default lift
+                    }
+
+                }
+                workout.add(exercise);
+            }
+
+        }
+        return workout;
     }
 }
 

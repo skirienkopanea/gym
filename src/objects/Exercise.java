@@ -14,6 +14,7 @@ public class Exercise {
         this.sets = sets;
         this.weight = weight;
         this.reps = reps;
+        this.comments = "";
     }
 
     public String getName() {

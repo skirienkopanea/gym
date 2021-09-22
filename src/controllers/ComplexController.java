@@ -176,17 +176,11 @@ public class ComplexController {
         TableColumn<Lift, String> column13 = new TableColumn<>("Quad");
         column13.setCellValueFactory(new PropertyValueFactory<>("quadricepsEmphasis"));
 
-        TableColumn<Lift, String> column14 = new TableColumn<>("Reference");
-        column14.setCellValueFactory(new PropertyValueFactory<>("ratioReferenceExercise"));
-
-        TableColumn<Lift, String> column15 = new TableColumn<>("Ratio");
-        column15.setCellValueFactory(new PropertyValueFactory<>("ratioOverReference"));
-
         TableColumn<Lift, String> column16 = new TableColumn<>("Sources");
         column16.setCellValueFactory(new PropertyValueFactory<>("sources"));
 
         tableView.getColumns().addAll(column2, column3, column4, column5, column6,
-                column7, column8, column9, column10, column11, column12, column13, column14, column15, column16);
+                column7, column8, column9, column10, column11, column12, column13, column16);
 
         loadLifts(tableView, workoutFile.getLifts());
 
