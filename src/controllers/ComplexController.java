@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import objects.Exercise;
 import objects.Lift;
@@ -324,15 +325,15 @@ public class ComplexController {
         TableColumn<Exercise, String> wColumn1 = new TableColumn<>("Name");
         wColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Exercise, Integer> wColumn2 = new TableColumn<>("Weight");
+        TableColumn<Exercise, Double> wColumn2 = new TableColumn<>("Weight");
         wColumn2.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        wColumn2.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        wColumn2.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         wColumn2.setOnEditCommit(
-                new EventHandler<TableColumn.CellEditEvent<Exercise, Integer>>() {
+                new EventHandler<TableColumn.CellEditEvent<Exercise, Double>>() {
                     @Override
-                    public void handle(TableColumn.CellEditEvent<Exercise, Integer> t) {
+                    public void handle(TableColumn.CellEditEvent<Exercise, Double> t) {
                         ((Exercise) t.getTableView().getItems().get(t.getTablePosition().getRow())).setWeight(t.getNewValue());
-                        Integer newValue = t.getNewValue();
+                        Double newValue = t.getNewValue();
                         System.out.println(newValue);
                         update(workoutView, tab);
 

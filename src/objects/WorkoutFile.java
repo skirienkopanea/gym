@@ -246,6 +246,11 @@ public class WorkoutFile {
                                 System.out.println(": " + n);
                                 field.set(exercise,n);
                                 break;
+                            case "double":
+                                double d = sc.nextDouble();
+                                System.out.println(": " + d);
+                                field.set(exercise,d);
+                                break;
                         }
 
                     } catch (IllegalAccessException e){

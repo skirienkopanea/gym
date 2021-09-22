@@ -3,12 +3,12 @@ package objects;
 public class Exercise {
     private Lift lift;
     private String name;
-    private int weight;
+    private double weight;
     private int sets;
     private int reps;
     private String comments;
 
-    public Exercise(Lift lift, int weight, int sets, int reps){
+    public Exercise(Lift lift, double weight, int sets, int reps){
         this.lift = lift;
         this.name = lift.getName();
         this.sets = sets;
@@ -33,11 +33,11 @@ public class Exercise {
         this.lift = lift;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 
