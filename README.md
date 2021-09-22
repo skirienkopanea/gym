@@ -1,6 +1,5 @@
 # gym
-JavaFX app to calculate 1RM percentages, log and plan workouts and PRs, calculate scapular volume and import/export csv files.
+JavaFX app to plan, save and open workout ".gym" files with calculated scapular "volume ratios" based on the amount of reps performed for each exercise and the exercise scapular movements.
 ![screenshot](screenshot.png)
 ![exercises](exercises.PNG)
-## To do
-* Replace gridpane for table
+
