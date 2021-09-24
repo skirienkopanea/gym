@@ -122,7 +122,7 @@ public class Settings {
         ArrayList<Lift> result = new ArrayList<>();
 
         Lift squat = new Lift("squat","Back Squat");
-        squat.setDescription("Barbell back squat.");
+        squat.setDescription("Barbell back squat");
         squat.setHamstringEmphasis(.40);
         squat.setQuadricepsEmphasis(.60);
 
@@ -196,7 +196,6 @@ public class Settings {
 
         Lift deadlift = new Lift("deadlift","Deadlift");
         deadlift.setDescription("Powerlifting Deadlift");
-        deadlift.setElevation(1);
         deadlift.setHamstringEmphasis(.9);
         deadlift.setQuadricepsEmphasis(.1);
 
@@ -273,9 +272,8 @@ public class Settings {
         result.add(pushPress);
 
         Lift dip = new Lift("dip","Dip");
-        dip.setDescription("Parallel Bars Calisthenic Dip.");
+        dip.setDescription("Parallel Bars Calisthenic Dip");
         dip.setProtraction(1);
-        dip.setDepression(1);
         dip.setInternalRotation(1);
 
         ArrayList<String> dipSources = new ArrayList<>();
@@ -285,7 +283,7 @@ public class Settings {
         result.add(dip);
 
         Lift chinUp = new Lift("chinUp","Chin-up");
-        chinUp.setDescription("Calisthenic Chin-up.");
+        chinUp.setDescription("Calisthenic Chin-up");
         chinUp.setDownwardRotation(1);
 
         ArrayList<String> chinUpSources = new ArrayList<>();
@@ -295,7 +293,7 @@ public class Settings {
         result.add(chinUp);
 
         Lift pullUp = new Lift("pullUp","Pull-up");
-        pullUp.setDescription("Calisthenic Pull-up.");
+        pullUp.setDescription("Calisthenic Pull-up");
         pullUp.setDownwardRotation(1);
         pullUp.setInternalRotation(1);
 
@@ -336,15 +334,26 @@ public class Settings {
 
         result.add(shrug);
 
-        Lift latPullDown = new Lift("latPullDown","Lat Pull-down");
-        latPullDown.setDescription("Stiffed arm lat pull-down (bent-over pullover)");
-        latPullDown.setDepression(1);
+        Lift sAPullDown = new Lift("sAPullDown","SA Pull-Down");
+        sAPullDown.setDescription("Straight-Arm Pull-down (Bent-over pullover)");
+        sAPullDown.setDepression(1);
 
         ArrayList<String> latPullDownSources = new ArrayList<>();
         latPullDownSources.add("https://exrx.net/WeightExercises/LatissimusDorsi/CBBentoverPullover");
-        latPullDown.setSources(latPullDownSources);
+        sAPullDown.setSources(latPullDownSources);
 
-        result.add(latPullDown);
+        result.add(sAPullDown);
+
+        Lift bandPullDown = new Lift("bandPullDown","Band Pull-Down");
+        bandPullDown.setDescription("Straight-Arm behind the neck band Pull-down");
+        bandPullDown.setDepression(1);
+
+        ArrayList<String> bandPullDownSources = new ArrayList<>();
+        bandPullDownSources.add("https://www.t-nation.com/training/shoulder-savers-part-1/");
+        bandPullDownSources.add("https://www.youtube.com/watch?v=B--EixnI0tA");
+        bandPullDown.setSources(bandPullDownSources);
+
+        result.add(bandPullDown);
 
         Lift rotatorCuff = new Lift("rotatorCuff","Rotator Cuff");
         rotatorCuff.setDescription("External rotation for rotator cuff");

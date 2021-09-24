@@ -12,6 +12,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
@@ -179,6 +181,8 @@ public class ComplexController {
 
         TableColumn<Lift, String> column16 = new TableColumn<>("Sources");
         column16.setCellValueFactory(new PropertyValueFactory<>("sources"));
+
+
 
         tableView.getColumns().addAll(column2, column3, column4, column5, column6,
                 column7, column8, column9, column10, column11, column12, column13, column16);
@@ -422,6 +426,22 @@ public class ComplexController {
                 update(workoutView, tab);
             }
         });
+
+        //ClipMenu
+        final ContextMenu contextMenu = new ContextMenu();
+        MenuItem copy = new MenuItem("Copy source");
+        contextMenu.getItems().addAll(copy);
+        copy.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ClipboardContent content = new ClipboardContent();
+                String str = liftSelectionModel.getSelectedItem().getSources().toString().replace("[","").replace("]","");
+                content.putString(str);
+                Clipboard.getSystemClipboard().setContent(content);
+            }
+        });
+
+        tableView.setContextMenu(contextMenu);
 
 
         splitPane.getItems().add(exerciseScrollPane);
