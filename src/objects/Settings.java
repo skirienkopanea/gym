@@ -22,7 +22,7 @@ public class Settings {
     private int yCoordinate;
 
     public Settings() {
-        setHome(new JFileChooser().getFileSystemView().getDefaultDirectory().toString() + "\\gym\\");
+        setHome(new JFileChooser().getFileSystemView().getDefaultDirectory().toString());
         this.maximized = true;
         this.fullScreen = false;
         this.width = 800;
